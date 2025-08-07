@@ -45,6 +45,9 @@ class AuthRoutes {
         this.router.get('/api/auth/google/callback', this.authController.googleCallback);
         this.router.get('/api/auth/facebook', this.authController.facebookAuth);
         this.router.get('/api/auth/facebook/callback', this.authController.facebookCallback);
+        
+        // Facebook OAuth alternative routes (to match Facebook app config)
+        this.router.get('/oauth/facebook/callback', this.authController.facebookCallback);
 
         console.log('✅ Auth routes đã được khởi tạo');
     }

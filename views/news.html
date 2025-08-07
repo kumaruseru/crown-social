@@ -52,9 +52,25 @@
 
                 <!-- Hot Topics Section -->
                 <div>
-                    <h2 class="text-2xl font-bold text-white mb-4">Chủ đề nóng hổi</h2>
-                    <div id="hot-topics" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        <!-- Hot topics will be loaded dynamically -->
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-2xl font-bold text-white">Chủ đề nóng hổi</h2>
+                        <div class="flex space-x-2">
+                            <button id="hot-topics-prev" class="w-10 h-10 bg-slate-800/80 hover:bg-slate-700 rounded-full flex items-center justify-center text-white transition-colors" aria-label="Xem chủ đề trước">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                </svg>
+                            </button>
+                            <button id="hot-topics-next" class="w-10 h-10 bg-slate-800/80 hover:bg-slate-700 rounded-full flex items-center justify-center text-white transition-colors" aria-label="Xem chủ đề tiếp theo">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="relative overflow-hidden">
+                        <div id="hot-topics" class="flex space-x-6 transition-transform duration-300 ease-in-out">
+                            <!-- Hot topics will be loaded dynamically -->
+                        </div>
                     </div>
                 </div>
 

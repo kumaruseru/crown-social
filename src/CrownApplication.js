@@ -2,15 +2,24 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const session = require('express-session');
+const MongoStore = require('connect-mongo');
 const passport = require('passport');
+const https = require('https');
+const fs = require('fs');
 
 const AppConfig = require('../config/app');
 const MainRouter = require('./routes');
+const PortManager = require('./utils/PortManager');
 const RequestLogger = require('./middleware/RequestLogger');
 const ErrorHandler = require('./middleware/ErrorHandler');
 const SecurityMiddleware = require('./middleware/SecurityMiddleware');
+const EnhancedAuthMiddleware = require('./middleware/EnhancedAuthMiddleware');
+const WAFProtection = require('./middleware/WAFProtection');
 const DatabaseManager = require('./models/DatabaseManager');
 const PassportConfig = require('./config/passport');
+const EnhancedOAuthConfig = require('./config/EnhancedOAuthConfig');
+const GDPRComplianceManager = require('./services/GDPRComplianceManager');
+const SIEMIntegration = require('./services/SIEMIntegration');
 
 /**
  * Crown Application Class
@@ -21,8 +30,14 @@ class CrownApplication {
         this.app = express();
         this.config = AppConfig;
         this.server = null;
+        this.httpsServer = null;
+        this.gdprManager = null;
+        this.siemIntegration = null;
+        this.wafProtection = null;
+        this.portManager = new PortManager();
         
         console.log('🏗️  Khởi tạo Crown Application...');
+        this.initializeSecurityServices();
         this.initializePassport();
         this.initializeMiddlewares();
         this.initializeRoutes();
@@ -30,25 +45,113 @@ class CrownApplication {
     }
 
     /**
+     * Initialize Security Services
+     */
+    initializeSecurityServices() {
+        console.log('🛡️  Khởi tạo Enhanced Security Services...');
+        
+        // Initialize WAF Protection
+        this.wafProtection = new WAFProtection({
+            enableAttackDetection: true,
+            enableRateLimiting: true,
+            enableGeoBlocking: true,
+            enableThreatIntelligence: true
+        });
+
+        // Initialize GDPR Compliance Manager
+        this.gdprManager = new GDPRComplianceManager({
+            enableConsentTracking: true,
+            enableDataSubjectRights: true,
+            enableAuditTrail: true,
+            enableBreachNotification: true
+        });
+
+        // Initialize SIEM Integration
+        this.siemIntegration = new SIEMIntegration({
+            providers: ['splunk', 'elasticsearch'],
+            enableThreatIntelligence: true,
+            enableAnomalyDetection: true
+        });
+
+        console.log('✅ Enhanced Security Services initialized');
+    }
+
+    /**
      * Khởi tạo Passport OAuth
      */
     initializePassport() {
-        console.log('🔑 Thiết lập Passport OAuth...');
+        console.log('🔑 Thiết lập Enhanced Passport OAuth...');
+        
+        // Initialize Enhanced OAuth Configuration
+        const enhancedOAuth = new EnhancedOAuthConfig();
+        enhancedOAuth.initialize();
+        
+        // Keep existing passport config for backward compatibility
         new PassportConfig();
+        
+        console.log('✅ Enhanced OAuth Authentication configured');
     }
 
     /**
      * Khởi tạo middlewares
      */
     initializeMiddlewares() {
-        console.log('🔧 Thiết lập middlewares...');
+        console.log('🔧 Thiết lập Enhanced Middlewares...');
 
         // Trust proxy headers in Docker environment
         this.app.set('trust proxy', 1);
 
-        // Security middleware
+        // WAF Protection (first line of defense)
+        this.app.use(this.wafProtection.protect());
+
+        // Enhanced Security middleware
         this.app.use(SecurityMiddleware.getHelmetConfig());
         this.app.use(SecurityMiddleware.securityHeaders());
+
+        // CORS (must be early in middleware chain)
+        this.app.use(cors(this.config.cors));
+
+        // Session configuration for Passport (must be before passport)
+        this.app.use(session({
+            secret: process.env.SESSION_SECRET || 'crown-session-secret-key-2024',
+            resave: false,
+            saveUninitialized: false,
+            store: MongoStore.create({
+                mongoUrl: this.config.database.mongoUri,
+                touchAfter: 24 * 3600 // 24 hours
+            }),
+            cookie: {
+                secure: false, // Set to true only with HTTPS in production
+                httpOnly: true,
+                maxAge: 24 * 60 * 60 * 1000 // 24 hours
+            },
+            name: 'crown.sess' // Custom session name
+        }));
+
+        // Passport middleware (must be after session)
+        this.app.use(passport.initialize());
+        this.app.use(passport.session());
+
+        // Enhanced Authentication Middleware
+        const enhancedAuth = new EnhancedAuthMiddleware();
+
+        console.log('✅ Enhanced Security Middlewares configured');
+        
+        // GDPR Compliance Middleware
+        this.app.use(this.gdprManager.middleware());
+        
+        // SIEM Integration (log all requests)
+        this.app.use((req, res, next) => {
+            this.siemIntegration.logSecurityEvent('REQUEST', {
+                method: req.method,
+                url: req.url,
+                ip: req.ip,
+                userAgent: req.get('User-Agent')
+            });
+            next();
+        });
+        
+        // Original Security Middleware
         this.app.use(SecurityMiddleware.securityLogger());
         this.app.use(SecurityMiddleware.sanitizeInput());
 
@@ -56,25 +159,6 @@ class CrownApplication {
         this.app.use('/api/', SecurityMiddleware.getApiRateLimit());
         this.app.use('/login', SecurityMiddleware.getLoginRateLimit());
         this.app.use('/register', SecurityMiddleware.getLoginRateLimit());
-
-        // CORS
-        this.app.use(cors(this.config.cors));
-
-        // Session configuration for Passport
-        this.app.use(session({
-            secret: process.env.SESSION_SECRET || 'crown-session-secret',
-            resave: false,
-            saveUninitialized: false,
-            cookie: {
-                secure: process.env.NODE_ENV === 'production',
-                httpOnly: true,
-                maxAge: 24 * 60 * 60 * 1000 // 24 hours
-            }
-        }));
-
-        // Passport middleware
-        this.app.use(passport.initialize());
-        this.app.use(passport.session());
 
         // Body parsing
         this.app.use(express.json({ limit: '10mb' }));
@@ -109,30 +193,51 @@ class CrownApplication {
      * Khởi tạo routes
      */
     initializeRoutes() {
-        console.log('🛣️  Thiết lập routes...');
+        console.log('🛣️  Thiết lập Enhanced Routes...');
+
+        // GDPR Compliance Routes
+        this.app.use('/api/gdpr', this.gdprManager.getRouter());
 
         // Health check endpoint for Docker
         this.app.get('/health', (req, res) => {
-            const healthStatus = {
-                status: 'OK',
-                timestamp: new Date().toISOString(),
-                uptime: process.uptime(),
-                environment: process.env.NODE_ENV || 'development',
-                version: require('../package.json').version || '1.0.0',
-                memory: process.memoryUsage(),
-                pid: process.pid
-            };
+            try {
+                const packageInfo = require('../../package.json');
+                const healthStatus = {
+                    status: 'OK',
+                    timestamp: new Date().toISOString(),
+                    uptime: process.uptime(),
+                    environment: process.env.NODE_ENV || 'development',
+                    version: packageInfo.version || '1.0.0',
+                    memory: process.memoryUsage(),
+                    pid: process.pid
+                };
 
-            // Check database connection
-            if (DatabaseManager.isConnected()) {
-                healthStatus.database = 'connected';
-            } else {
-                healthStatus.database = 'disconnected';
-                healthStatus.status = 'DEGRADED';
+                // Check database connection
+                const mongoose = require('mongoose');
+                if (mongoose.connection && mongoose.connection.readyState === 1) {
+                    healthStatus.database = 'connected';
+                } else {
+                    healthStatus.database = 'disconnected';
+                    healthStatus.status = 'DEGRADED';
+                }
+
+                // Security services status
+                healthStatus.security = {
+                    waf: this.wafProtection ? 'active' : 'inactive',
+                    gdpr: this.gdprManager ? 'active' : 'inactive',
+                    siem: this.siemIntegration ? 'active' : 'inactive'
+                };
+
+                const statusCode = healthStatus.status === 'OK' ? 200 : 503;
+                res.status(statusCode).json(healthStatus);
+            } catch (error) {
+                console.error('Health check error:', error);
+                res.status(500).json({
+                    status: 'ERROR',
+                    error: error.message,
+                    timestamp: new Date().toISOString()
+                });
             }
-
-            const statusCode = healthStatus.status === 'OK' ? 200 : 503;
-            res.status(statusCode).json(healthStatus);
         });
 
         // Metrics endpoint for Prometheus
@@ -196,23 +301,47 @@ crown_version_info{version="${metrics.version}"} 1`);
     async start() {
         return new Promise(async (resolve, reject) => {
             try {
+                // Check and clean up ports first
+                console.log('🔍 Checking port availability...');
+                await this.portManager.checkPortStatus([3000, 3443]);
+                
+                // Kill any processes on these ports
+                await this.portManager.killProcessOnPorts([3000, 3443]);
+                
+                // Wait a moment for cleanup
+                await new Promise(resolve => setTimeout(resolve, 1000));
                 // Kết nối database trước
                 console.log('🗄️  Kết nối database...');
                 await DatabaseManager.connect();
 
+                // Initialize Security Services
+                console.log('🛡️  Khởi tạo Security Services...');
+                await this.siemIntegration.initialize();
+                
+                // Initialize WAF Protection
+                console.log('🛡️  Khởi tạo WAF Protection...');
+                await this.wafProtection.initialize();
+                
+                // Initialize GDPR Compliance Manager
+                console.log('🛡️  Khởi tạo GDPR Compliance...');
+                await this.gdprManager.initialize();
+
                 const { port, host } = this.config.server;
 
+                // Start HTTP server
                 this.server = this.app.listen(port, host, () => {
-                    console.log('\n🎉 Crown Server đã khởi động thành công!');
+                    console.log('\n🎉 Crown Server (HTTP) đã khởi động thành công!');
                     this.config.printConfig();
                     console.log('\n📱 Truy cập ứng dụng tại:');
                     console.log(`   - Trang chủ: ${this.config.getServerUrl()}`);
                     console.log(`   - Đăng nhập: ${this.config.getServerUrl()}/login.html`);
                     console.log(`   - Đăng ký: ${this.config.getServerUrl()}/register.html`);
                     console.log(`   - API Health: ${this.config.getServerUrl()}/health`);
-                    console.log('\n🚀 Server đã sẵn sàng nhận requests!\n');
-                    resolve(this.server);
+                    console.log(`   - GDPR API: ${this.config.getServerUrl()}/api/gdpr`);
                 });
+
+                // Start HTTPS server if certificates exist
+                await this.startHTTPSServer();
 
                 // Handle server errors
                 this.server.on('error', (error) => {
@@ -225,11 +354,49 @@ crown_version_info{version="${metrics.version}"} 1`);
                     }
                 });
 
+                console.log('\n🚀 Crown Social Network - Enterprise Security Ready!\n');
+                resolve(this.server);
+
             } catch (error) {
                 console.error('❌ Không thể khởi động server:', error);
                 reject(error);
             }
         });
+    }
+
+    /**
+     * Start HTTPS Server with SSL certificates
+     */
+    async startHTTPSServer() {
+        try {
+            const httpsPort = process.env.HTTPS_PORT || 3443;
+            const sslKeyPath = path.join(__dirname, '../docker/ssl/key.pem');
+            const sslCertPath = path.join(__dirname, '../docker/ssl/cert.pem');
+
+            // Check if SSL certificates exist
+            if (fs.existsSync(sslKeyPath) && fs.existsSync(sslCertPath)) {
+                const privateKey = fs.readFileSync(sslKeyPath, 'utf8');
+                const certificate = fs.readFileSync(sslCertPath, 'utf8');
+                const credentials = { key: privateKey, cert: certificate };
+
+                this.httpsServer = https.createServer(credentials, this.app);
+                
+                this.httpsServer.listen(httpsPort, () => {
+                    console.log(`\n🔒 HTTPS Server started on port ${httpsPort}`);
+                    console.log(`   - Secure URL: https://localhost:${httpsPort}`);
+                    console.log(`   - SSL/TLS: ✅ Enabled`);
+                });
+
+                this.httpsServer.on('error', (error) => {
+                    console.error('❌ HTTPS Server error:', error.message);
+                });
+            } else {
+                console.log('\n⚠️  SSL certificates not found. Running HTTP only.');
+                console.log('   Run: npm run generate-ssl để tạo SSL certificates');
+            }
+        } catch (error) {
+            console.error('❌ Failed to start HTTPS server:', error.message);
+        }
     }
 
     /**

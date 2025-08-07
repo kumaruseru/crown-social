@@ -50,27 +50,43 @@ class NewsService {
             
             let newCount = 0;
             let updatedCount = 0;
+            let skippedCount = 0;
             let errorCount = 0;
 
             // Xử lý từng bài tin
             for (const newsItem of latestNews) {
                 try {
                     const result = await this.saveArticle(newsItem);
-                    if (result.isNew) {
+                    
+                    if (result.error) {
+                        errorCount++;
+                        // Don't log every single error to avoid spam
+                        if (errorCount <= 5) {
+                            console.error(`❌ Error saving "${newsItem.title?.substring(0, 30)}...": ${result.reason}`);
+                        }
+                    } else if (result.skipped) {
+                        skippedCount++;
+                    } else if (result.isNew) {
                         newCount++;
                     } else {
                         updatedCount++;
                     }
                 } catch (error) {
                     errorCount++;
-                    console.error(`❌ Lỗi khi lưu bài "${newsItem.title}":`, error.message);
+                    if (errorCount <= 5) {
+                        console.error(`❌ Unexpected error for "${newsItem.title?.substring(0, 30)}...":`, error.message);
+                    }
                 }
             }
 
             const duration = Date.now() - startTime;
             console.log(`✅ Hoàn thành đồng bộ tin tức:`);
-            console.log(`   📊 Thống kê: ${newCount} mới, ${updatedCount} cập nhật, ${errorCount} lỗi`);
+            console.log(`   📊 Thống kê: ${newCount} mới, ${updatedCount} cập nhật, ${skippedCount} bỏ qua, ${errorCount} lỗi`);
             console.log(`   ⏱️ Thời gian: ${Math.round(duration / 1000)}s`);
+            
+            if (errorCount > 5) {
+                console.log(`   ⚠️ Có ${errorCount - 5} lỗi khác không được hiển thị để tránh spam log`);
+            }
 
         } catch (error) {
             console.error('❌ Lỗi khi đồng bộ tin tức:', error);
@@ -98,16 +114,67 @@ class NewsService {
                 return { isNew: false, article: existingArticle, updated };
             }
 
+            // Validate required fields before creating
+            const originalId = newsItem.id || newsItem.guid || `${newsItem.source}_${Date.now()}`;
+            const content = newsItem.content || newsItem.description || 'Nội dung đang được cập nhật...';
+            
+            if (!originalId || !content || !newsItem.title) {
+                console.warn('⚠️ Skipping article with missing required fields:', {
+                    hasOriginalId: !!originalId,
+                    hasContent: !!content,
+                    hasTitle: !!newsItem.title,
+                    title: newsItem.title?.substring(0, 50)
+                });
+                return { isNew: false, article: null, skipped: true, reason: 'Missing required fields' };
+            }
+
+            // Validate and map category
+            const validCategories = [
+                'latest', 'politics', 'world', 'business', 'technology', 
+                'sports', 'entertainment', 'health', 'education', 'travel',
+                'culture', 'law', 'science', 'finance', 'startup', 'gaming',
+                'mobile', 'internet', 'stocks', 'realestate', 'banking',
+                'football', 'medicine', 'nutrition', 'university', 'exam',
+                'home', 'general', 'music', 'movie', 'fashion', 'lifestyle',
+                'auto', 'publishing', 'factcheck', 'relaxation', 'reader',
+                'video', 'society', 'profile', 'military', 'islands', 'local',
+                'perspective', 'photo', 'infographics', 'special', 'ethnic',
+                'photo360', 'economy', 'news', 'automotive', 'personal', 
+                'opinion', 'youth', 'family'
+            ];
+
+            // Map RSS categories to valid categories
+            let category = newsItem.category || 'general';
+            const categoryMappings = {
+                'economy': 'business',
+                'news': 'general', 
+                'automotive': 'auto',
+                'personal': 'lifestyle',
+                'opinion': 'perspective',
+                'youth': 'lifestyle',
+                'family': 'lifestyle'
+            };
+            
+            // Apply mapping if needed
+            if (categoryMappings[category]) {
+                category = categoryMappings[category];
+            }
+            
+            // Fallback to general if still invalid
+            if (!validCategories.includes(category)) {
+                category = 'general';
+            }
+
             // Tạo bài viết mới
             const article = new Article({
-                originalId: newsItem.id,
+                originalId: String(originalId),
                 title: newsItem.title,
-                description: newsItem.description,
-                content: newsItem.content,
+                description: newsItem.description || newsItem.title,
+                content: String(content),
                 link: newsItem.link,
                 source: newsItem.source,
-                category: newsItem.category,
-                author: newsItem.author,
+                category: category,
+                author: newsItem.author || '',
                 image: newsItem.image,
                 tags: newsItem.tags || [],
                 publishedAt: new Date(newsItem.pubDate),
@@ -122,8 +189,21 @@ class NewsService {
             return { isNew: true, article };
 
         } catch (error) {
-            console.error('❌ Lỗi khi lưu bài viết:', error);
-            throw error;
+            console.error('❌ Lỗi khi lưu bài viết:', {
+                error: error.message,
+                title: newsItem?.title?.substring(0, 50),
+                originalId: newsItem?.id || 'missing',
+                hasContent: !!(newsItem?.content || newsItem?.description)
+            });
+            
+            // Return graceful failure instead of throwing
+            return { 
+                isNew: false, 
+                article: null, 
+                error: true, 
+                reason: error.message,
+                validationErrors: error.name === 'ValidationError' ? Object.keys(error.errors) : null
+            };
         }
     }
 

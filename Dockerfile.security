@@ -1,0 +1,65 @@
+# Docker Security Configuration
+# Dockerfile.security - Enhanced security build
+
+# Use specific version instead of latest
+FROM node:18.17.0-alpine3.18
+
+# Create non-root user
+RUN addgroup -g 1001 -S crownapp && \
+    adduser -S crownapp -u 1001 -G crownapp
+
+# Set security labels
+LABEL maintainer="Crown Security Team" \
+      version="1.0.0" \
+      description="Crown Social Network - Security Hardened" \
+      security.scan="enabled"
+
+# Install security updates
+RUN apk update && \
+    apk upgrade && \
+    apk add --no-cache dumb-init && \
+    rm -rf /var/cache/apk/*
+
+# Create app directory with proper permissions
+WORKDIR /usr/src/app
+RUN chown -R crownapp:crownapp /usr/src/app
+
+# Copy package files first for better caching
+COPY --chown=crownapp:crownapp package*.json ./
+
+# Switch to non-root user
+USER crownapp
+
+# Install dependencies with security audit
+RUN npm ci --only=production && \
+    npm audit --audit-level high && \
+    npm cache clean --force
+
+# Copy application code
+COPY --chown=crownapp:crownapp . .
+
+# Remove unnecessary files
+RUN rm -f .env* && \
+    rm -rf tests/ docs/ .git/ .vscode/
+
+# Set secure permissions
+RUN find . -type f -exec chmod 644 {} \; && \
+    find . -type d -exec chmod 755 {} \; && \
+    chmod 755 server.js
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD node healthcheck.js || exit 1
+
+# Security: Run with dumb-init to handle signals properly
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+
+# Start application
+CMD ["node", "server.js"]
+
+# Expose port
+EXPOSE 3000
+
+# Security: Add resource limits
+# These should be set in docker-compose or K8s deployment
+# --memory=512m --cpus=1.0 --pids-limit=100

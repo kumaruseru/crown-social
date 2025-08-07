@@ -1,0 +1,583 @@
+{
+  "auditId": "ded1b4c7-0721-4b1d-b532-77f90b475f4b",
+  "projectPath": "C:\\Users\\nghia\\crown2",
+  "timestamp": "2025-08-07T13:30:32.760Z",
+  "summary": {
+    "totalChecks": 27,
+    "totalViolations": 27,
+    "severityBreakdown": {
+      "CRITICAL": 3,
+      "HIGH": 11,
+      "MEDIUM": 13,
+      "LOW": 0,
+      "INFO": 0
+    },
+    "frameworkCoverage": {
+      "ISO27001": {
+        "total": 2,
+        "violations": 15
+      },
+      "GDPR": {
+        "total": 0,
+        "violations": 8
+      },
+      "NIST": {
+        "total": 5,
+        "violations": 0
+      },
+      "OWASP": {
+        "total": 10,
+        "violations": 0
+      },
+      "SOC2": {
+        "total": 5,
+        "violations": 0
+      },
+      "PCI_DSS": {
+        "total": 1,
+        "violations": 0
+      },
+      "HIPAA": {
+        "total": 0,
+        "violations": 0
+      },
+      "SOX": {
+        "total": 0,
+        "violations": 0
+      }
+    },
+    "complianceGaps": 27
+  },
+  "violations": [
+    {
+      "id": "5e2b0acc-e392-4726-bc37-064d1ba15dab",
+      "timestamp": "2025-08-07T13:30:32.744Z",
+      "severity": "CRITICAL",
+      "framework": "ISO27001",
+      "title": "Missing Access Control Mechanism",
+      "description": "No authentication mechanism found in codebase",
+      "reference": "A.9.1.1",
+      "severityScore": 5
+    },
+    {
+      "id": "3264e511-bbe6-4e80-ab0a-9a650b64061d",
+      "timestamp": "2025-08-07T13:30:32.753Z",
+      "severity": "CRITICAL",
+      "framework": "GDPR",
+      "title": "Missing Consent Management System",
+      "description": "No consent management implementation found",
+      "reference": "Art. 7",
+      "severityScore": 5
+    },
+    {
+      "id": "1cd67d58-ae54-4d29-a947-71d0d8c37bf2",
+      "timestamp": "2025-08-07T13:30:32.753Z",
+      "severity": "CRITICAL",
+      "framework": "GDPR",
+      "title": "Missing Data Subject Rights Implementation",
+      "description": "No data subject rights (access, rectification, erasure) implementation",
+      "reference": "Chapter III",
+      "severityScore": 5
+    },
+    {
+      "id": "3746ae7d-91d6-4e5f-be9d-03798b30800d",
+      "timestamp": "2025-08-07T13:30:32.744Z",
+      "severity": "HIGH",
+      "framework": "ISO27001",
+      "title": "Missing Information Security Policy",
+      "description": "No security policy documentation found",
+      "reference": "A.5.1.1",
+      "severityScore": 4
+    },
+    {
+      "id": "72dd3956-7482-4b48-b6d5-32af819c3cbe",
+      "timestamp": "2025-08-07T13:30:32.745Z",
+      "severity": "HIGH",
+      "framework": "ISO27001",
+      "title": "Missing Incident Response Plan",
+      "description": "No incident response procedures documented",
+      "reference": "A.16.1.1",
+      "severityScore": 4
+    },
+    {
+      "id": "faafda9f-0e52-4315-8430-71c466b8b9e0",
+      "timestamp": "2025-08-07T13:30:32.746Z",
+      "severity": "HIGH",
+      "framework": "ISO27001",
+      "title": "Missing Business Continuity Plan",
+      "description": "No business continuity planning documented",
+      "reference": "A.17.1.1",
+      "severityScore": 4
+    },
+    {
+      "id": "c8b5f5f6-2ea5-479b-bcd2-d3b4fb4243ef",
+      "timestamp": "2025-08-07T13:30:32.747Z",
+      "severity": "HIGH",
+      "framework": "ISO27001",
+      "title": "Missing HTTPS/TLS Configuration",
+      "description": "No HTTPS/TLS implementation found",
+      "reference": "A.13.1.1",
+      "severityScore": 4
+    },
+    {
+      "id": "d65a724a-9211-47f7-b879-3a0c8fe5e49c",
+      "timestamp": "2025-08-07T13:30:32.748Z",
+      "severity": "HIGH",
+      "framework": "ISO27001",
+      "title": "Missing Role-Based Access Control",
+      "description": "No RBAC implementation found",
+      "reference": "A.9.1.2",
+      "severityScore": 4
+    },
+    {
+      "id": "438a0804-ba09-45d1-94e9-03d76830a9ce",
+      "timestamp": "2025-08-07T13:30:32.751Z",
+      "severity": "HIGH",
+      "framework": "ISO27001",
+      "title": "Missing Key Management",
+      "description": "No key management system found",
+      "reference": "A.10.1.2",
+      "severityScore": 4
+    },
+    {
+      "id": "2074dda5-4b21-49a5-8ce6-4fb760748583",
+      "timestamp": "2025-08-07T13:30:32.751Z",
+      "severity": "HIGH",
+      "framework": "ISO27001",
+      "title": "Missing Backup Procedures",
+      "description": "No backup procedures documented",
+      "reference": "A.12.3.1",
+      "severityScore": 4
+    },
+    {
+      "id": "54e1a6ad-1a11-406b-91b5-c5cb705578fa",
+      "timestamp": "2025-08-07T13:30:32.754Z",
+      "severity": "HIGH",
+      "framework": "GDPR",
+      "title": "Missing Data Protection by Design Documentation",
+      "description": "No privacy-by-design principles documented",
+      "reference": "Art. 25",
+      "severityScore": 4
+    },
+    {
+      "id": "2bf72383-9013-44f7-ba76-64f5f91bdc9b",
+      "timestamp": "2025-08-07T13:30:32.754Z",
+      "severity": "HIGH",
+      "framework": "GDPR",
+      "title": "Missing Data Breach Response Procedures",
+      "description": "No data breach notification procedures documented",
+      "reference": "Art. 33-34",
+      "severityScore": 4
+    },
+    {
+      "id": "e4ce063c-2e6e-4f7d-8c43-4e078e7d625c",
+      "timestamp": "2025-08-07T13:30:32.754Z",
+      "severity": "HIGH",
+      "framework": "GDPR",
+      "title": "Missing Data Processing Legal Basis Documentation",
+      "description": "No documentation of legal basis for data processing",
+      "reference": "Art. 6",
+      "severityScore": 4
+    },
+    {
+      "id": "fef8ae72-6c7b-4616-887d-4a6ead3b90f0",
+      "timestamp": "2025-08-07T13:30:32.754Z",
+      "severity": "HIGH",
+      "framework": "GDPR",
+      "title": "Missing Privacy Notice",
+      "description": "No privacy notice/policy found for data subjects",
+      "reference": "Art. 13-14",
+      "severityScore": 4
+    },
+    {
+      "id": "dd5c6461-9c5e-484b-afc9-138bbd2990bd",
+      "timestamp": "2025-08-07T13:30:32.744Z",
+      "severity": "MEDIUM",
+      "framework": "ISO27001",
+      "title": "Missing Physical Security Documentation",
+      "description": "No physical security controls documented",
+      "reference": "A.11.1.1",
+      "severityScore": 3
+    },
+    {
+      "id": "2b5c77c6-b06e-47b5-90a3-2d8725958da5",
+      "timestamp": "2025-08-07T13:30:32.745Z",
+      "severity": "MEDIUM",
+      "framework": "ISO27001",
+      "title": "Missing Asset Inventory",
+      "description": "No asset inventory documentation found",
+      "reference": "A.8.1.1",
+      "severityScore": 3
+    },
+    {
+      "id": "50d429c1-097d-4484-97ac-a041849706e5",
+      "timestamp": "2025-08-07T13:30:32.745Z",
+      "severity": "MEDIUM",
+      "framework": "ISO27001",
+      "title": "Missing Development Lifecycle Documentation",
+      "description": "No secure development lifecycle documented",
+      "reference": "A.14.2.1",
+      "severityScore": 3
+    },
+    {
+      "id": "fd2a36ad-0a55-415d-b064-4460d9f4dae0",
+      "timestamp": "2025-08-07T13:30:32.745Z",
+      "severity": "MEDIUM",
+      "framework": "ISO27001",
+      "title": "Missing Supplier Risk Management",
+      "description": "No third-party/supplier risk assessment documented",
+      "reference": "A.15.1.1",
+      "severityScore": 3
+    },
+    {
+      "id": "97825925-70f3-4a64-bf54-f7867266cc49",
+      "timestamp": "2025-08-07T13:30:32.746Z",
+      "severity": "MEDIUM",
+      "framework": "ISO27001",
+      "title": "Missing Compliance Documentation",
+      "description": "No legal/regulatory compliance documentation",
+      "reference": "A.18.1.1",
+      "severityScore": 3
+    },
+    {
+      "id": "ef4f731b-e5a6-42f7-8512-4fa2363fd0b0",
+      "timestamp": "2025-08-07T13:30:32.747Z",
+      "severity": "MEDIUM",
+      "framework": "ISO27001",
+      "title": "Missing Management Commitment Documentation",
+      "description": "No evidence of management commitment to information security",
+      "reference": "A.5.1.1",
+      "severityScore": 3
+    },
+    {
+      "id": "00451f2e-8cad-4cde-9751-895aad27d063",
+      "timestamp": "2025-08-07T13:30:32.747Z",
+      "severity": "MEDIUM",
+      "framework": "ISO27001",
+      "title": "Missing Data Classification",
+      "description": "No data classification scheme documented",
+      "reference": "A.8.2.1",
+      "severityScore": 3
+    },
+    {
+      "id": "5fd887a2-21c4-4190-865d-4a85c96f1903",
+      "timestamp": "2025-08-07T13:30:32.754Z",
+      "severity": "MEDIUM",
+      "framework": "GDPR",
+      "title": "Missing International Data Transfer Documentation",
+      "description": "No international data transfer safeguards documented",
+      "reference": "Chapter V",
+      "severityScore": 3
+    },
+    {
+      "id": "1a51e978-f98d-42d7-be9e-d98e36264ffc",
+      "timestamp": "2025-08-07T13:30:32.754Z",
+      "severity": "MEDIUM",
+      "framework": "GDPR",
+      "title": "Missing Data Protection Impact Assessment",
+      "description": "No DPIA documentation for high-risk processing",
+      "reference": "Art. 35",
+      "severityScore": 3
+    },
+    {
+      "id": "ad6fad5e-b9a7-43d8-b666-ec6d90fb98c1",
+      "timestamp": "2025-08-07T13:30:32.758Z",
+      "severity": "MEDIUM",
+      "framework": "DATA_GOVERNANCE",
+      "title": "Missing Data Retention Policy",
+      "description": "No data retention policies documented",
+      "reference": "Retention",
+      "severityScore": 3
+    },
+    {
+      "id": "e66563b0-0a9a-48a6-b815-792894856a3f",
+      "timestamp": "2025-08-07T13:30:32.759Z",
+      "severity": "MEDIUM",
+      "framework": "CODE_SECURITY",
+      "title": "Missing Code Review Process",
+      "description": "No code review process documented",
+      "reference": "Review",
+      "severityScore": 3
+    },
+    {
+      "id": "cc6af69d-b4f5-410e-914b-fd292521efa9",
+      "timestamp": "2025-08-07T13:30:32.759Z",
+      "severity": "MEDIUM",
+      "framework": "CODE_SECURITY",
+      "title": "Missing Secure Coding Standards",
+      "description": "No secure coding standards documented",
+      "reference": "Standards",
+      "severityScore": 3
+    },
+    {
+      "id": "9b750d5c-cb8b-4b7c-b8fe-3db27dcac3b8",
+      "timestamp": "2025-08-07T13:30:32.759Z",
+      "severity": "MEDIUM",
+      "framework": "CODE_SECURITY",
+      "title": "Missing Static Analysis",
+      "description": "No static analysis tools configured",
+      "reference": "SAST",
+      "severityScore": 3
+    }
+  ],
+  "results": [
+    {
+      "timestamp": "2025-08-07T13:30:32.751Z",
+      "severity": "INFO",
+      "framework": "ISO27001",
+      "check": "Cryptographic Controls",
+      "description": "Found in: config\\app.js",
+      "reference": "A.10.1.1"
+    },
+    {
+      "timestamp": "2025-08-07T13:30:32.751Z",
+      "severity": "INFO",
+      "framework": "ISO27001",
+      "check": "Logging Mechanism",
+      "description": "Found in: config\\app.js",
+      "reference": "A.12.4.1"
+    },
+    {
+      "timestamp": "2025-08-07T13:30:32.755Z",
+      "severity": "INFO",
+      "framework": "NIST",
+      "check": "Identify Function Check",
+      "description": "Assessed governance and risk management",
+      "reference": "ID"
+    },
+    {
+      "timestamp": "2025-08-07T13:30:32.755Z",
+      "severity": "INFO",
+      "framework": "NIST",
+      "check": "Protect Function Check",
+      "description": "Assessed protective measures",
+      "reference": "PR"
+    },
+    {
+      "timestamp": "2025-08-07T13:30:32.755Z",
+      "severity": "INFO",
+      "framework": "NIST",
+      "check": "Detect Function Check",
+      "description": "Assessed detection capabilities",
+      "reference": "DE"
+    },
+    {
+      "timestamp": "2025-08-07T13:30:32.755Z",
+      "severity": "INFO",
+      "framework": "NIST",
+      "check": "Respond Function Check",
+      "description": "Assessed response capabilities",
+      "reference": "RS"
+    },
+    {
+      "timestamp": "2025-08-07T13:30:32.755Z",
+      "severity": "INFO",
+      "framework": "NIST",
+      "check": "Recover Function Check",
+      "description": "Assessed recovery capabilities",
+      "reference": "RC"
+    },
+    {
+      "timestamp": "2025-08-07T13:30:32.755Z",
+      "severity": "INFO",
+      "framework": "OWASP",
+      "check": "A01 Broken Access Control",
+      "description": "Access control mechanisms reviewed",
+      "reference": "A01:2021"
+    },
+    {
+      "timestamp": "2025-08-07T13:30:32.755Z",
+      "severity": "INFO",
+      "framework": "OWASP",
+      "check": "A02 Cryptographic Failures",
+      "description": "Cryptographic implementations reviewed",
+      "reference": "A02:2021"
+    },
+    {
+      "timestamp": "2025-08-07T13:30:32.755Z",
+      "severity": "INFO",
+      "framework": "OWASP",
+      "check": "A03 Injection",
+      "description": "Injection vulnerabilities assessed",
+      "reference": "A03:2021"
+    },
+    {
+      "timestamp": "2025-08-07T13:30:32.756Z",
+      "severity": "INFO",
+      "framework": "OWASP",
+      "check": "A04 Insecure Design",
+      "description": "Security design patterns reviewed",
+      "reference": "A04:2021"
+    },
+    {
+      "timestamp": "2025-08-07T13:30:32.756Z",
+      "severity": "INFO",
+      "framework": "OWASP",
+      "check": "A05 Security Misconfiguration",
+      "description": "Configuration security reviewed",
+      "reference": "A05:2021"
+    },
+    {
+      "timestamp": "2025-08-07T13:30:32.756Z",
+      "severity": "INFO",
+      "framework": "OWASP",
+      "check": "A07 Authentication Failures",
+      "description": "Authentication mechanisms reviewed",
+      "reference": "A07:2021"
+    },
+    {
+      "timestamp": "2025-08-07T13:30:32.756Z",
+      "severity": "INFO",
+      "framework": "OWASP",
+      "check": "A08 Data Integrity Failures",
+      "description": "Software and data integrity reviewed",
+      "reference": "A08:2021"
+    },
+    {
+      "timestamp": "2025-08-07T13:30:32.756Z",
+      "severity": "INFO",
+      "framework": "OWASP",
+      "check": "A09 Logging Failures",
+      "description": "Security logging and monitoring reviewed",
+      "reference": "A09:2021"
+    },
+    {
+      "timestamp": "2025-08-07T13:30:32.756Z",
+      "severity": "INFO",
+      "framework": "OWASP",
+      "check": "A10 SSRF",
+      "description": "Server-side request forgery vulnerabilities assessed",
+      "reference": "A10:2021"
+    },
+    {
+      "timestamp": "2025-08-07T13:30:32.756Z",
+      "severity": "INFO",
+      "framework": "OWASP",
+      "check": "A06 Vulnerable Components",
+      "description": "Package dependencies present for review",
+      "reference": "A06:2021"
+    },
+    {
+      "timestamp": "2025-08-07T13:30:32.756Z",
+      "severity": "INFO",
+      "framework": "SOC2",
+      "check": "Security Criteria",
+      "description": "Security controls assessed",
+      "reference": "CC6.0"
+    },
+    {
+      "timestamp": "2025-08-07T13:30:32.756Z",
+      "severity": "INFO",
+      "framework": "SOC2",
+      "check": "Availability Criteria",
+      "description": "System availability controls assessed",
+      "reference": "A1.0"
+    },
+    {
+      "timestamp": "2025-08-07T13:30:32.756Z",
+      "severity": "INFO",
+      "framework": "SOC2",
+      "check": "Processing Integrity Criteria",
+      "description": "Processing integrity controls assessed",
+      "reference": "PI1.0"
+    },
+    {
+      "timestamp": "2025-08-07T13:30:32.756Z",
+      "severity": "INFO",
+      "framework": "SOC2",
+      "check": "Confidentiality Criteria",
+      "description": "Confidentiality controls assessed",
+      "reference": "C1.0"
+    },
+    {
+      "timestamp": "2025-08-07T13:30:32.756Z",
+      "severity": "INFO",
+      "framework": "SOC2",
+      "check": "Privacy Criteria",
+      "description": "Privacy controls assessed",
+      "reference": "P1.0"
+    },
+    {
+      "timestamp": "2025-08-07T13:30:32.757Z",
+      "severity": "INFO",
+      "framework": "PCI_DSS",
+      "check": "No Payment Processing",
+      "description": "No payment processing detected",
+      "reference": "N/A"
+    },
+    {
+      "timestamp": "2025-08-07T13:30:32.757Z",
+      "severity": "INFO",
+      "framework": "DATA_GOVERNANCE",
+      "check": "Data Minimization",
+      "description": "Data minimization practices reviewed",
+      "reference": "Minimization"
+    },
+    {
+      "timestamp": "2025-08-07T13:30:32.757Z",
+      "severity": "INFO",
+      "framework": "DATA_GOVERNANCE",
+      "check": "Data Quality",
+      "description": "Data quality controls reviewed",
+      "reference": "Quality"
+    },
+    {
+      "timestamp": "2025-08-07T13:30:32.757Z",
+      "severity": "INFO",
+      "framework": "DATA_GOVERNANCE",
+      "check": "Data Lineage",
+      "description": "Data lineage tracking reviewed",
+      "reference": "Lineage"
+    },
+    {
+      "timestamp": "2025-08-07T13:30:32.759Z",
+      "severity": "INFO",
+      "framework": "CODE_SECURITY",
+      "check": "Dependency Scanning",
+      "description": "Found: package-lock.json",
+      "reference": "Dependencies"
+    }
+  ],
+  "frameworks": [
+    "ISO27001",
+    "GDPR",
+    "NIST",
+    "OWASP",
+    "SOC2",
+    "PCI_DSS",
+    "HIPAA",
+    "SOX"
+  ],
+  "recommendations": [
+    {
+      "framework": "ISO27001",
+      "priority": "CRITICAL",
+      "violationCount": 15,
+      "recommendation": "Implement Information Security Management System (ISMS) controls to address 15 compliance gaps"
+    },
+    {
+      "framework": "GDPR",
+      "priority": "CRITICAL",
+      "violationCount": 8,
+      "recommendation": "Establish comprehensive data protection program to address 8 privacy compliance issues"
+    },
+    {
+      "framework": "DATA_GOVERNANCE",
+      "priority": "MEDIUM",
+      "violationCount": 1,
+      "recommendation": "Establish data governance framework with policies, procedures, and controls"
+    },
+    {
+      "framework": "CODE_SECURITY",
+      "priority": "MEDIUM",
+      "violationCount": 3,
+      "recommendation": "Implement secure development lifecycle with code review, static analysis, and dependency scanning"
+    }
+  ],
+  "complianceScore": {
+    "raw": 135,
+    "possible": 135,
+    "percentage": 100,
+    "level": "COMPLIANT"
+  }
+}

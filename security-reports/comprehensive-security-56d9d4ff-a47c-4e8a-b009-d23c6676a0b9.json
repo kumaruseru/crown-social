@@ -1,0 +1,334 @@
+{
+  "validationId": "56d9d4ff-a47c-4e8a-b009-d23c6676a0b9",
+  "timestamp": "2025-08-07T13:30:33.020Z",
+  "projectPath": "C:\\Users\\nghia\\crown2",
+  "targetUrl": "http://localhost:3000",
+  "summary": {
+    "totalIssues": 96,
+    "criticalIssues": 0,
+    "highIssues": 27,
+    "mediumIssues": 69,
+    "lowIssues": 0,
+    "coverage": {
+      "codeAnalysis": true,
+      "vulnerabilityAssessment": true,
+      "complianceAudit": false,
+      "penetrationTest": false,
+      "integrationTests": true
+    }
+  },
+  "results": {
+    "codeAnalysis": {
+      "eslint": {
+        "issues": [
+          {
+            "severity": "error",
+            "rule": "no-eval",
+            "message": "eval() usage detected - potential security risk",
+            "file": "src/utils/parser.js",
+            "line": 45
+          },
+          {
+            "severity": "warning",
+            "rule": "no-console",
+            "message": "console.log() may leak sensitive information",
+            "file": "src/controllers/auth.js",
+            "line": 23
+          }
+        ],
+        "summary": {
+          "errors": 1,
+          "warnings": 1,
+          "fixable": 0
+        }
+      },
+      "semgrep": {
+        "findings": [
+          {
+            "rule_id": "javascript.express.security.audit.xss.template-string-in-html",
+            "severity": "WARNING",
+            "message": "Template string used in HTML context may lead to XSS",
+            "path": "src/views/profile.js",
+            "start": {
+              "line": 67,
+              "col": 15
+            },
+            "end": {
+              "line": 67,
+              "col": 45
+            }
+          },
+          {
+            "rule_id": "javascript.lang.security.audit.sql-injection.tainted-sql-string",
+            "severity": "ERROR",
+            "message": "User input used in SQL query without sanitization",
+            "path": "src/models/User.js",
+            "start": {
+              "line": 123,
+              "col": 20
+            },
+            "end": {
+              "line": 123,
+              "col": 55
+            }
+          }
+        ],
+        "stats": {
+          "total": 2,
+          "errors": 1,
+          "warnings": 1
+        }
+      },
+      "customRules": {
+        "rules": 6,
+        "violations": 6,
+        "details": [
+          {
+            "rule": "custom_rule_1",
+            "status": "fulfilled",
+            "result": {
+              "rule": "hardcoded_secrets",
+              "violations": 6,
+              "severity": "HIGH"
+            }
+          },
+          {
+            "rule": "custom_rule_2",
+            "status": "fulfilled",
+            "result": {
+              "rule": "weak_cryptography",
+              "violations": 30,
+              "severity": "MEDIUM"
+            }
+          },
+          {
+            "rule": "custom_rule_3",
+            "status": "fulfilled",
+            "result": {
+              "rule": "insecure_randomness",
+              "violations": 13,
+              "severity": "MEDIUM"
+            }
+          },
+          {
+            "rule": "custom_rule_4",
+            "status": "fulfilled",
+            "result": {
+              "rule": "unsafe_deserialization",
+              "violations": 20,
+              "severity": "HIGH"
+            }
+          },
+          {
+            "rule": "custom_rule_5",
+            "status": "fulfilled",
+            "result": {
+              "rule": "command_injection",
+              "violations": 1,
+              "severity": "HIGH"
+            }
+          },
+          {
+            "rule": "custom_rule_6",
+            "status": "fulfilled",
+            "result": {
+              "rule": "path_traversal",
+              "violations": 26,
+              "severity": "MEDIUM"
+            }
+          }
+        ]
+      },
+      "codeQuality": {
+        "files": 71,
+        "totalLines": 26389,
+        "averageComplexity": 1,
+        "duplicatedLines": 2689,
+        "maintainabilityIndex": 88,
+        "codeSmells": []
+      }
+    },
+    "vulnerabilityAssessment": {
+      "npmAudit": {
+        "metadata": {
+          "vulnerabilities": {
+            "total": 0
+          }
+        },
+        "vulnerabilities": {}
+      },
+      "snykTest": null,
+      "retireJs": null,
+      "dependencyCheck": {
+        "totalDependencies": 22,
+        "vulnerableDependencies": [],
+        "outdatedDependencies": [
+          {
+            "name": "axios",
+            "current": "^1.11.0",
+            "issue": "Potentially outdated version"
+          },
+          {
+            "name": "cheerio",
+            "current": "^1.1.2",
+            "issue": "Potentially outdated version"
+          },
+          {
+            "name": "express-session",
+            "current": "^1.18.2",
+            "issue": "Potentially outdated version"
+          },
+          {
+            "name": "leaflet",
+            "current": "^1.9.4",
+            "issue": "Potentially outdated version"
+          },
+          {
+            "name": "multer",
+            "current": "^1.4.5-lts.1",
+            "issue": "Potentially outdated version"
+          },
+          {
+            "name": "passport",
+            "current": "^0.7.0",
+            "issue": "Potentially outdated version"
+          }
+        ],
+        "riskScore": 12
+      }
+    },
+    "integrationTests": {
+      "total": 6,
+      "passed": 4,
+      "failed": 2,
+      "details": [
+        {
+          "test": "security_test_1",
+          "status": "fulfilled",
+          "result": {
+            "test": "authentication_flow",
+            "passed": true,
+            "message": "Authentication flow validated"
+          }
+        },
+        {
+          "test": "security_test_2",
+          "status": "fulfilled",
+          "result": {
+            "test": "authorization_controls",
+            "passed": true,
+            "message": "Authorization controls validated"
+          }
+        },
+        {
+          "test": "security_test_3",
+          "status": "fulfilled",
+          "result": {
+            "test": "input_validation",
+            "passed": false,
+            "message": "Input validation issues detected",
+            "issues": [
+              "XSS vulnerability in search field",
+              "SQL injection in user query"
+            ]
+          }
+        },
+        {
+          "test": "security_test_4",
+          "status": "fulfilled",
+          "result": {
+            "test": "session_security",
+            "passed": true,
+            "message": "Session security controls validated"
+          }
+        },
+        {
+          "test": "security_test_5",
+          "status": "fulfilled",
+          "result": {
+            "test": "data_protection",
+            "passed": true,
+            "message": "Data protection measures validated"
+          }
+        },
+        {
+          "test": "security_test_6",
+          "status": "fulfilled",
+          "result": {
+            "test": "error_handling",
+            "passed": false,
+            "message": "Error handling security issues",
+            "issues": [
+              "Stack traces exposed in production",
+              "Sensitive data in error messages"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "riskAssessment": {
+    "score": 465,
+    "level": "CRITICAL",
+    "factors": {
+      "criticalVulnerabilities": 0,
+      "highVulnerabilities": 27,
+      "complianceGaps": 0,
+      "codeQualityIssues": 6
+    },
+    "businessImpact": "Severe - Business operations at risk, potential data breaches, regulatory violations",
+    "likelihood": "MEDIUM"
+  },
+  "recommendations": [
+    {
+      "category": "Code Security",
+      "priority": "HIGH",
+      "recommendation": "Fix identified code security vulnerabilities including hardcoded secrets, weak cryptography, and injection risks",
+      "timeline": "Immediate (1-2 weeks)"
+    },
+    {
+      "category": "Application Security",
+      "priority": "MEDIUM",
+      "recommendation": "Fix integration security test failures and improve security controls",
+      "timeline": "Medium-term (1-2 months)"
+    }
+  ],
+  "nextSteps": [
+    {
+      "phase": "Immediate (Week 1)",
+      "tasks": [
+        "Address critical security vulnerabilities",
+        "Fix hardcoded secrets and weak cryptography",
+        "Implement input validation controls",
+        "Set up security monitoring and logging"
+      ]
+    },
+    {
+      "phase": "Short-term (Weeks 2-4)",
+      "tasks": [
+        "Complete compliance gap remediation",
+        "Implement advanced security controls (WAF, HSM)",
+        "Conduct security training for development team",
+        "Establish security code review process"
+      ]
+    },
+    {
+      "phase": "Medium-term (Months 2-3)",
+      "tasks": [
+        "Deploy comprehensive security architecture",
+        "Implement automated security testing in CI/CD",
+        "Conduct regular security assessments",
+        "Establish incident response procedures"
+      ]
+    },
+    {
+      "phase": "Long-term (Months 4-6)",
+      "tasks": [
+        "Achieve compliance certification (ISO 27001, SOC 2)",
+        "Implement advanced threat detection",
+        "Conduct third-party security audit",
+        "Maintain continuous security improvement program"
+      ]
+    }
+  ]
+}

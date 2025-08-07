@@ -1,0 +1,394 @@
+# Kubernetes Security Policies
+# Network Policies, Pod Security Standards, RBAC
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: crown-social
+  labels:
+    name: crown-social
+    security.level: "high"
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/warn: restricted
+
+---
+# Network Policy - Default Deny All
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: crown-social
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+
+---
+# Network Policy - Allow Crown App Communication
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: crown-app-network-policy
+  namespace: crown-social
+spec:
+  podSelector:
+    matchLabels:
+      app: crown-app
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: ingress-nginx
+    ports:
+    - protocol: TCP
+      port: 3000
+  - from:
+    - podSelector:
+        matchLabels:
+          app: crown-app
+    ports:
+    - protocol: TCP
+      port: 3000
+  egress:
+  # Allow DNS resolution
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: kube-system
+    ports:
+    - protocol: UDP
+      port: 53
+  # Allow MongoDB connection
+  - to:
+    - podSelector:
+        matchLabels:
+          app: mongodb
+    ports:
+    - protocol: TCP
+      port: 27017
+  # Allow Redis connection
+  - to:
+    - podSelector:
+        matchLabels:
+          app: redis
+    ports:
+    - protocol: TCP
+      port: 6379
+  # Allow HTTPS outbound for external APIs
+  - to: {}
+    ports:
+    - protocol: TCP
+      port: 443
+
+---
+# Pod Security Policy (Deprecated in K8s 1.25, use Pod Security Standards)
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: crown-app-psp
+  namespace: crown-social
+spec:
+  privileged: false
+  allowPrivilegeEscalation: false
+  requiredDropCapabilities:
+    - ALL
+  volumes:
+    - 'configMap'
+    - 'emptyDir'
+    - 'projected'
+    - 'secret'
+    - 'downwardAPI'
+    - 'persistentVolumeClaim'
+  runAsUser:
+    rule: 'MustRunAsNonRoot'
+  seLinux:
+    rule: 'RunAsAny'
+  supplementalGroups:
+    rule: 'MustRunAs'
+    ranges:
+      - min: 1
+        max: 65535
+  fsGroup:
+    rule: 'MustRunAs'
+    ranges:
+      - min: 1
+        max: 65535
+  readOnlyRootFilesystem: true
+
+---
+# Service Account with minimal permissions
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: crown-app-sa
+  namespace: crown-social
+automountServiceAccountToken: false
+
+---
+# RBAC - Role for Crown App
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: crown-app-role
+  namespace: crown-social
+rules:
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["get", "list"]
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get"]
+
+---
+# RBAC - RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: crown-app-rolebinding
+  namespace: crown-social
+subjects:
+- kind: ServiceAccount
+  name: crown-app-sa
+  namespace: crown-social
+roleRef:
+  kind: Role
+  name: crown-app-role
+  apiGroup: rbac.authorization.k8s.io
+
+---
+# Secure Crown App Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crown-app
+  namespace: crown-social
+  labels:
+    app: crown-app
+    version: v1.0.0
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: crown-app
+  template:
+    metadata:
+      labels:
+        app: crown-app
+        version: v1.0.0
+      annotations:
+        # Security annotations
+        container.apparmor.security.beta.kubernetes.io/crown-app: runtime/default
+        seccomp.security.alpha.kubernetes.io/pod: runtime/default
+    spec:
+      serviceAccountName: crown-app-sa
+      automountServiceAccountToken: false
+      
+      # Security Context for Pod
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        runAsGroup: 1001
+        fsGroup: 1001
+        seccompProfile:
+          type: RuntimeDefault
+        supplementalGroups: [1001]
+      
+      containers:
+      - name: crown-app
+        image: crown-app:1.0.0-security
+        imagePullPolicy: Always
+        
+        # Security Context for Container
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 1001
+          runAsGroup: 1001
+          capabilities:
+            drop:
+            - ALL
+            add:
+            - NET_BIND_SERVICE # Only if binding to port < 1024
+          seccompProfile:
+            type: RuntimeDefault
+        
+        ports:
+        - containerPort: 3000
+          name: http
+          protocol: TCP
+        
+        # Environment variables from secrets
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: crown-secrets
+              key: jwt-secret
+        - name: SESSION_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: crown-secrets
+              key: session-secret
+        - name: MONGODB_URI
+          valueFrom:
+            secretKeyRef:
+              name: crown-secrets
+              key: mongodb-uri
+        
+        # Volume mounts for writable directories
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+        - name: app-logs
+          mountPath: /usr/src/app/logs
+        - name: app-cache
+          mountPath: /usr/src/app/.cache
+        
+        # Resource limits
+        resources:
+          limits:
+            cpu: "1000m"
+            memory: "512Mi"
+            ephemeral-storage: "1Gi"
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+            ephemeral-storage: "100Mi"
+        
+        # Health checks
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+      
+      # Volumes for writable directories
+      volumes:
+      - name: tmp
+        emptyDir:
+          sizeLimit: 100Mi
+      - name: app-logs
+        emptyDir:
+          sizeLimit: 1Gi
+      - name: app-cache
+        emptyDir:
+          sizeLimit: 500Mi
+      
+      # Additional security settings
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      
+      # Node selection (optional - for dedicated security nodes)
+      nodeSelector:
+        security-level: high
+      
+      # Pod anti-affinity for high availability
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - crown-app
+              topologyKey: kubernetes.io/hostname
+
+---
+# Secrets (should be created separately with actual values)
+apiVersion: v1
+kind: Secret
+metadata:
+  name: crown-secrets
+  namespace: crown-social
+type: Opaque
+data:
+  # Base64 encoded secrets (use kubectl create secret or external secret management)
+  jwt-secret: "base64-encoded-jwt-secret"
+  session-secret: "base64-encoded-session-secret"
+  mongodb-uri: "base64-encoded-mongodb-uri"
+
+---
+# Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: crown-app-service
+  namespace: crown-social
+  labels:
+    app: crown-app
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 3000
+    protocol: TCP
+    name: http
+  selector:
+    app: crown-app
+
+---
+# Horizontal Pod Autoscaler
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: crown-app-hpa
+  namespace: crown-social
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: crown-app
+  minReplicas: 3
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+
+---
+# Pod Disruption Budget
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: crown-app-pdb
+  namespace: crown-social
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: crown-app

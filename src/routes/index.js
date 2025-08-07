@@ -23,6 +23,7 @@ class MainRouter {
         const authRoutes = new AuthRoutes();
         this.router.use('/', authRoutes.getRouter());
 
+        // API routes - phải đặt TRƯỚC 404 handler
         // Post routes  
         const postRoutes = new PostRoutes();
         this.router.use('/api/posts', postRoutes.getRouter());
@@ -65,7 +66,7 @@ class MainRouter {
             });
         });
 
-        // 404 handler for API routes
+        // 404 handler for API routes - PHẢI ĐẶT CUỐI CÙNG
         this.router.use('/api/*', (req, res) => {
             res.status(404).json({
                 success: false,

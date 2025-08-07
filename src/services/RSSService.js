@@ -1259,7 +1259,19 @@ class RSSService {
             }
         }
 
-        return Array.from(new Set(tags.filter(tag => tag && tag.trim())));
+        return Array.from(new Set(tags.filter(tag => {
+            // Ensure tag is a string and not empty
+            if (typeof tag === 'string') {
+                return tag.trim().length > 0;
+            } else if (tag && typeof tag === 'object' && tag.toString) {
+                const tagStr = tag.toString().trim();
+                return tagStr.length > 0;
+            }
+            return false;
+        }).map(tag => {
+            // Convert to string and trim
+            return typeof tag === 'string' ? tag.trim() : String(tag).trim();
+        })));
     }
 
     extractPlainText(html) {

@@ -1,0 +1,17 @@
+# Container Security Scanner
+# Docker security best practices and vulnerability scanning
+
+# .trivyignore - Trivy security scanner ignore file
+# Ignore known false positives
+
+# Ignore npm audit issues that are not applicable
+npm:braces:2018-1002768
+npm:minimatch:2022-3517
+
+# Ignore base image CVEs that are patched in our layer
+alpine:CVE-2023-0464
+node:CVE-2023-30581
+
+# Ignore dev dependencies (not in production)
+npm:eslint:*
+npm:nodemon:*

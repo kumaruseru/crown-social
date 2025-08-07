@@ -44,6 +44,7 @@ const articleSchema = new mongoose.Schema({
         type: String,
         required: true,
         enum: [
+            // Basic categories
             'latest', 'politics', 'world', 'business', 'technology', 
             'sports', 'entertainment', 'health', 'education', 'travel',
             'culture', 'law', 'science', 'finance', 'startup', 'gaming',
@@ -53,7 +54,10 @@ const articleSchema = new mongoose.Schema({
             'auto', 'publishing', 'factcheck', 'relaxation', 'reader',
             'video', 'society', 'profile', 'military', 'islands', 'local',
             'perspective', 'photo', 'infographics', 'special', 'ethnic',
-            'photo360'
+            'photo360',
+            // RSS feed categories
+            'economy', 'news', 'automotive', 'personal', 'opinion', 
+            'youth', 'family'
         ],
         index: true
     },

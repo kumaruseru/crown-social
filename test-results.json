@@ -1,0 +1,91 @@
+{
+  "security": {
+    "summary": {
+      "total": 26,
+      "passed": 16,
+      "failed": 10,
+      "successRate": "61.5%",
+      "status": "NEEDS IMPROVEMENT"
+    },
+    "failedTests": [
+      {
+        "name": "Valid Login",
+        "error": null
+      },
+      {
+        "name": "Invalid Credentials Rejection",
+        "error": null
+      },
+      {
+        "name": "Weak Password Rejection",
+        "error": null
+      },
+      {
+        "name": "JWT Token Validation",
+        "error": null
+      },
+      {
+        "name": "Protected Route Access Control",
+        "error": null
+      },
+      {
+        "name": "Role-based Access Control",
+        "error": null
+      },
+      {
+        "name": "Oversized Input Rejection",
+        "error": null
+      },
+      {
+        "name": "Invalid Data Type Handling",
+        "error": null
+      },
+      {
+        "name": "Required Field Validation",
+        "error": null
+      },
+      {
+        "name": "Rate Limiting Enforcement",
+        "error": null
+      }
+    ],
+    "recommendations": [
+      "Configure more aggressive rate limiting policies"
+    ],
+    "timestamp": "2025-08-07T14:28:40.552Z"
+  },
+  "performance": null,
+  "overall": {
+    "testExecutionSummary": {
+      "totalDuration": "0.27s",
+      "timestamp": "2025-08-07T14:28:40.554Z",
+      "testSuitesRun": [
+        "Security"
+      ]
+    },
+    "securityAssessment": {
+      "status": "NEEDS IMPROVEMENT",
+      "successRate": "61.5%",
+      "passedTests": 16,
+      "totalTests": 26,
+      "criticalIssues": 10
+    },
+    "performanceAssessment": null,
+    "overallHealthScore": 62,
+    "productionReadiness": {
+      "status": "NEEDS_IMPROVEMENT",
+      "blockers": [
+        "Security test success rate below 85%"
+      ],
+      "warnings": [],
+      "readinessScore": 70
+    },
+    "recommendations": {
+      "critical": [
+        "Security: Configure more aggressive rate limiting policies"
+      ],
+      "important": [],
+      "optional": []
+    }
+  }
+}
