@@ -45,6 +45,7 @@
     "express-session": "^1.18.2",
     "express-validator": "^7.2.1",
     "helmet": "^7.2.0",
+    "jimp": "^1.6.0",
     "jsonwebtoken": "^9.0.2",
     "leaflet": "^1.9.4",
     "leaflet-control-geocoder": "^3.2.0",
@@ -59,7 +60,11 @@
     "passport-jwt": "^4.0.1",
     "passport-microsoft": "^2.1.0",
     "passport-twitter": "^1.0.4",
-    "rss-parser": "^3.13.0"
+    "qrcode": "^1.5.4",
+    "rss-parser": "^3.13.0",
+    "sharp": "^0.34.3",
+    "socket.io": "^4.8.1",
+    "speakeasy": "^2.0.0"
   },
   "devDependencies": {
     "jest": "^30.0.5",

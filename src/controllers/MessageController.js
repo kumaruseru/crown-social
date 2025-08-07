@@ -2,6 +2,7 @@ const Message = require('../models/Message');
 const User = require('../models/User');
 const EncryptionService = require('../services/EncryptionService');
 const BaseController = require('./BaseController');
+const FileUploadService = require('../services/FileUploadService');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs').promises;
@@ -359,6 +360,206 @@ class MessageController extends BaseController {
         } catch (error) {
             console.error('Error creating session:', error);
             return this.sendError(res, 'Không thể tạo session', 500);
+        }
+    }
+
+    /**
+     * Enhanced methods for real-time chat and file uploads
+     */
+
+    /**
+     * Send message with file attachments
+     */
+    async sendMessageWithFiles(req, res) {
+        try {
+            const { recipientId, content = '', messageType = 'file' } = req.body;
+            const senderId = req.user.id;
+            const files = req.files?.attachments || [];
+
+            if (!recipientId) {
+                return this.sendError(res, 'Recipient ID is required', 400);
+            }
+
+            if (files.length === 0) {
+                return this.sendError(res, 'At least one file attachment is required', 400);
+            }
+
+            // Process uploaded files
+            const attachments = [];
+            for (const file of files) {
+                try {
+                    const fileInfo = await FileUploadService.processFileUpload(file, senderId, 'message_attachment');
+                    
+                    attachments.push({
+                        type: file.mimetype.startsWith('image/') ? 'image' :
+                              file.mimetype.startsWith('video/') ? 'video' :
+                              file.mimetype.startsWith('audio/') ? 'audio' : 'document',
+                        url: FileUploadService.getFileUrl(fileInfo.paths.processed || fileInfo.paths.original),
+                        filename: fileInfo.originalName,
+                        size: fileInfo.size,
+                        mimeType: file.mimetype,
+                        thumbnail: fileInfo.paths.thumbnail ? FileUploadService.getFileUrl(fileInfo.paths.thumbnail) : null
+                    });
+                } catch (fileError) {
+                    console.error('File processing error:', fileError);
+                    // Continue with other files
+                }
+            }
+
+            // Create message with attachments
+            const message = new Message({
+                senderId,
+                receiverId: recipientId,
+                sender: senderId,
+                recipient: recipientId,
+                content: content || `Sent ${attachments.length} file(s)`,
+                messageType,
+                attachments,
+                isRead: false,
+                sentAt: new Date(),
+                deliveredAt: new Date()
+            });
+
+            await message.save();
+            await message.populate('sender', 'firstName lastName username avatar');
+
+            return this.sendSuccess(res, message, 'Message with files sent successfully');
+
+        } catch (error) {
+            console.error('Send message with files error:', error);
+            return this.sendError(res, 'Failed to send message with files', 500);
+        }
+    }
+
+    /**
+     * Send image message
+     */
+    async sendImageMessage(req, res) {
+        try {
+            const { recipientId, content = '' } = req.body;
+            const senderId = req.user.id;
+            const imageFile = req.file;
+
+            if (!imageFile) {
+                return this.sendError(res, 'Image file is required', 400);
+            }
+
+            // Process image
+            const fileInfo = await FileUploadService.processFileUpload(imageFile, senderId, 'image_message');
+            
+            const attachment = {
+                type: 'image',
+                url: FileUploadService.getFileUrl(fileInfo.paths.processed || fileInfo.paths.original),
+                filename: fileInfo.originalName,
+                size: fileInfo.size,
+                mimeType: imageFile.mimetype,
+                thumbnail: fileInfo.paths.thumbnail ? FileUploadService.getFileUrl(fileInfo.paths.thumbnail) : null
+            };
+
+            const message = new Message({
+                senderId,
+                receiverId: recipientId,
+                sender: senderId,
+                recipient: recipientId,
+                content: content || 'Sent an image',
+                messageType: 'image',
+                attachments: [attachment],
+                isRead: false,
+                sentAt: new Date(),
+                deliveredAt: new Date()
+            });
+
+            await message.save();
+            await message.populate('sender', 'firstName lastName username avatar');
+
+            return this.sendSuccess(res, message, 'Image message sent successfully');
+
+        } catch (error) {
+            console.error('Send image message error:', error);
+            return this.sendError(res, 'Failed to send image message', 500);
+        }
+    }
+
+    /**
+     * Get user conversations (enhanced)
+     */
+    async getUserConversations(req, res) {
+        try {
+            const userId = req.user.id;
+            const page = parseInt(req.query.page) || 1;
+            const limit = parseInt(req.query.limit) || 20;
+
+            const conversations = await Message.getUserConversations ? 
+                await Message.getUserConversations(userId, { page, limit }) :
+                await this.getRecentConversations(req, res);
+
+            return this.sendSuccess(res, {
+                conversations,
+                pagination: {
+                    page,
+                    limit,
+                    hasMore: conversations.length === limit
+                }
+            });
+
+        } catch (error) {
+            console.error('Get conversations error:', error);
+            return this.sendError(res, 'Failed to get conversations', 500);
+        }
+    }
+
+    /**
+     * Mark messages as read
+     */
+    async markAsRead(req, res) {
+        try {
+            const userId = req.user.id;
+            const { userId: otherUserId } = req.params;
+
+            const result = await Message.markAsRead ? 
+                await Message.markAsRead(userId, otherUserId) :
+                { modifiedCount: 0 };
+
+            return this.sendSuccess(res, { 
+                messagesRead: result.modifiedCount 
+            }, 'Messages marked as read');
+
+        } catch (error) {
+            console.error('Mark as read error:', error);
+            return this.sendError(res, 'Failed to mark messages as read', 500);
+        }
+    }
+
+    /**
+     * Search messages
+     */
+    async searchMessages(req, res) {
+        try {
+            const userId = req.user.id;
+            const { query } = req.query;
+            const page = parseInt(req.query.page) || 1;
+            const limit = parseInt(req.query.limit) || 20;
+
+            if (!query) {
+                return this.sendError(res, 'Search query is required', 400);
+            }
+
+            const messages = await Message.searchMessages ? 
+                await Message.searchMessages(userId, query, { page, limit }) :
+                [];
+
+            return this.sendSuccess(res, {
+                messages,
+                pagination: {
+                    page,
+                    limit,
+                    hasMore: messages.length === limit
+                }
+            });
+
+        } catch (error) {
+            console.error('Search messages error:', error);
+            return this.sendError(res, 'Failed to search messages', 500);
         }
     }
 }

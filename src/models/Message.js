@@ -6,6 +6,18 @@ const { Schema } = mongoose;
  */
 const MessageSchema = new Schema({
     // Thông tin người gửi và người nhận
+    sender: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+        index: true
+    },
+    recipient: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+        index: true
+    },
     senderId: {
         type: Schema.Types.ObjectId,
         ref: 'User',
@@ -26,7 +38,38 @@ const MessageSchema = new Schema({
         index: true
     },
     
-    // Nội dung tin nhắn đã mã hóa
+    // Nội dung tin nhắn (cho real-time chat)
+    content: {
+        type: String,
+        maxlength: 10000,
+        trim: true
+    },
+    
+    messageType: {
+        type: String,
+        enum: ['text', 'image', 'video', 'audio', 'file', 'location', 'system'],
+        default: 'text',
+        required: true
+    },
+    
+    // File attachments
+    attachments: [{
+        type: {
+            type: String,
+            enum: ['image', 'video', 'audio', 'document'],
+            required: true
+        },
+        url: {
+            type: String,
+            required: true
+        },
+        filename: String,
+        size: Number,
+        mimeType: String,
+        thumbnail: String
+    }],
+    
+    // Nội dung tin nhắn đã mã hóa (cho end-to-end encryption)
     encryptedContent: {
         type: String,
         required: true
@@ -262,6 +305,53 @@ MessageSchema.statics.getRecentConversations = function(userId, limit = 20) {
             $limit: limit
         }
     ]);
+};
+
+// Real-time chat static methods
+MessageSchema.statics.getConversation = async function(userId1, userId2, options = {}) {
+    const { page = 1, limit = 50 } = options;
+    const skip = (page - 1) * limit;
+    
+    return await this.find({
+        $or: [
+            { sender: userId1, recipient: userId2 },
+            { sender: userId2, recipient: userId1 },
+            { senderId: userId1, receiverId: userId2 },
+            { senderId: userId2, receiverId: userId1 }
+        ]
+    })
+    .populate('sender senderId', 'firstName lastName username avatar')
+    .populate('recipient receiverId', 'firstName lastName username avatar')
+    .sort({ createdAt: -1 })
+    .limit(limit)
+    .skip(skip);
+};
+
+MessageSchema.statics.markAsRead = async function(userId, otherUserId) {
+    return await this.updateMany(
+        {
+            $or: [
+                { senderId: otherUserId, receiverId: userId },
+                { sender: otherUserId, recipient: userId }
+            ],
+            isRead: false
+        },
+        {
+            $set: {
+                isRead: true,
+                readAt: new Date()
+            }
+        }
+    );
+};
+
+MessageSchema.statics.getUnreadCount = async function(userId) {
+    return await this.countDocuments({
+        $or: [
+            { receiverId: userId, isRead: false },
+            { recipient: userId, isRead: false }
+        ]
+    });
 };
 
 /**

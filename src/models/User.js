@@ -89,6 +89,73 @@ const UserSchema = new Schema({
         type: String,
         default: null
     },
+    
+    // Social Profile Fields
+    bio: {
+        type: String,
+        maxlength: [500, 'Bio không được vượt quá 500 ký tự'],
+        trim: true
+    },
+    location: {
+        type: String,
+        maxlength: [100, 'Địa điểm không được vượt quá 100 ký tự'],
+        trim: true
+    },
+    website: {
+        type: String,
+        match: [/^https?:\/\/.+/, 'Website phải có định dạng URL hợp lệ']
+    },
+    phoneNumber: {
+        type: String,
+        match: [/^[\+]?[1-9][\d]{0,15}$/, 'Số điện thoại không hợp lệ']
+    },
+    
+    // Privacy Settings
+    profileVisibility: {
+        type: String,
+        enum: ['public', 'friends', 'private'],
+        default: 'friends'
+    },
+    showEmail: {
+        type: Boolean,
+        default: false
+    },
+    showPhone: {
+        type: Boolean,
+        default: false
+    },
+    allowFriendRequests: {
+        type: Boolean,
+        default: true
+    },
+    
+    // Activity Status
+    isOnline: {
+        type: Boolean,
+        default: false
+    },
+    lastSeen: {
+        type: Date,
+        default: Date.now
+    },
+    
+    // Statistics (denormalized for performance)
+    friendsCount: {
+        type: Number,
+        default: 0,
+        min: 0
+    },
+    postsCount: {
+        type: Number,
+        default: 0,
+        min: 0
+    },
+    followersCount: {
+        type: Number,
+        default: 0,
+        min: 0
+    },
+    
     isActive: {
         type: Boolean,
         default: true

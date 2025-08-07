@@ -5,9 +5,10 @@ const PostRoutes = require('./PostRoutes');
 const MessageRoutes = require('./MessageRoutes');
 const SettingsRoutes = require('./SettingsRoutes');
 const NewsRoutes = require('./NewsRoutes');
+const friendsRouter = require('./friends');
 
 /**
- * Main Router - Tập hợp tất cả routes
+ * Enhanced Main Router - All routes including social features
  */
 class MainRouter {
     constructor() {
@@ -16,15 +17,19 @@ class MainRouter {
     }
 
     /**
-     * Khởi tạo tất cả routes
+     * Initialize all routes
      */
     initializeRoutes() {
         // Auth routes
         const authRoutes = new AuthRoutes();
         this.router.use('/', authRoutes.getRouter());
 
-        // API routes - phải đặt TRƯỚC 404 handler
-        // Post routes  
+        // API routes - must be placed BEFORE 404 handler
+        
+        // Social features routes
+        this.router.use('/api/friends', friendsRouter);
+        
+        // Post routes with enhanced social features
         const postRoutes = new PostRoutes();
         this.router.use('/api/posts', postRoutes.getRouter());
         
@@ -56,30 +61,37 @@ class MainRouter {
             res.sendFile(path.join(__dirname, '../../views/maps.html'));
         });
 
-        // Health check route
+        // Health check route with enhanced info
         this.router.get('/health', (req, res) => {
             res.json({
                 success: true,
-                message: 'Crown Server is running',
+                message: 'Crown Social Network Server is running',
                 timestamp: new Date().toISOString(),
-                uptime: process.uptime()
+                uptime: process.uptime(),
+                features: {
+                    socialFeatures: true,
+                    friendSystem: true,
+                    activityFeed: true,
+                    realTimeMessaging: true,
+                    newsSystem: true
+                }
             });
         });
 
-        // 404 handler for API routes - PHẢI ĐẶT CUỐI CÙNG
+        // 404 handler for API routes - MUST BE PLACED LAST
         this.router.use('/api/*', (req, res) => {
             res.status(404).json({
                 success: false,
-                message: 'API endpoint không tồn tại',
+                message: 'API endpoint not found',
                 timestamp: new Date().toISOString()
             });
         });
 
-        console.log('✅ Main router đã được khởi tạo');
+        console.log('✅ Enhanced Main router initialized with social features');
     }
 
     /**
-     * Lấy router
+     * Get router instance
      * @returns {express.Router}
      */
     getRouter() {
