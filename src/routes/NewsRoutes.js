@@ -13,6 +13,17 @@ class NewsRoutes {
     initializeRoutes() {
         // Public routes - không cần authentication
         
+        // Status endpoint first to avoid conflicts
+        this.router.get('/status', (req, res) => {
+            res.json({
+                success: true,
+                service: 'News Service',
+                status: 'active',
+                timestamp: new Date().toISOString(),
+                endpoints: ['/api/news', '/api/news/status', '/api/news/latest']
+            });
+        });
+        
         // GET /api/news/latest - Tin mới nhất
         this.router.get('/latest', 
             this.newsController.getLatestNews.bind(this.newsController)
@@ -53,14 +64,14 @@ class NewsRoutes {
             this.newsController.searchNews.bind(this.newsController)
         );
 
-        // GET /api/news/:id - Chi tiết bài viết
-        this.router.get('/:id', 
-            this.newsController.getArticleDetails.bind(this.newsController)
-        );
-
         // GET /api/news/stats - Thống kê tin tức (public cho dashboard)
         this.router.get('/admin/statistics', 
             this.newsController.getNewsStatistics.bind(this.newsController)
+        );
+
+        // GET /api/news/:id - Chi tiết bài viết (MUST BE LAST among GET routes)
+        this.router.get('/:id', 
+            this.newsController.getArticleDetails.bind(this.newsController)
         );
 
         // Protected routes - cần authentication

@@ -16,7 +16,18 @@ class PostRoutes {
      * Initialize all routes
      */
     initializeRoutes() {
-        // Apply authentication middleware to all routes
+        // Status endpoint (no auth required)
+        this.router.get('/status', (req, res) => {
+            res.json({
+                success: true,
+                service: 'Posts Service',
+                status: 'active',
+                timestamp: new Date().toISOString(),
+                endpoints: ['/api/posts', '/api/posts/status', '/api/posts/feed']
+            });
+        });
+
+        // Apply authentication middleware to other routes
         this.router.use(AuthMiddleware.requireAuth);
 
         // Feed and Discovery

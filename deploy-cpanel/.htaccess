@@ -1,0 +1,17 @@
+RewriteEngine On
+
+# Handle Angular/React Router
+RewriteRule ^(?!api|public|uploads|node_modules).*$ / [L,R=200]
+
+# Proxy API requests to Node.js app
+RewriteRule ^api/(.*)$ http://localhost:3000/api/$1 [P,L]
+
+# Handle static files
+RewriteRule ^(public|uploads)/(.*)$ $1/$2 [L]
+
+# Security headers
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options nosniff
+    Header always set X-Frame-Options DENY
+    Header always set X-XSS-Protection "1; mode=block"
+</IfModule>

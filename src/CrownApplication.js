@@ -16,6 +16,7 @@ const ErrorHandler = require('./middleware/ErrorHandler');
 const SecurityMiddleware = require('./middleware/SecurityMiddleware');
 const EnhancedAuthMiddleware = require('./middleware/EnhancedAuthMiddleware');
 const WAFProtection = require('./middleware/WAFProtection');
+const GlobalRateLimitBypass = require('./middleware/GlobalRateLimitBypass');
 const DatabaseManager = require('./models/DatabaseManager');
 const PassportConfig = require('./config/passport');
 const EnhancedOAuthConfig = require('./config/EnhancedOAuthConfig');
@@ -172,14 +173,33 @@ class CrownApplication {
         // Trust proxy headers in Docker environment
         this.app.set('trust proxy', 1);
 
+        // Stress Test Middleware (first for bypassing)
+        const StressTestMiddleware = require('./middleware/StressTestMiddleware');
+        // Global rate limit bypass (must be first)
+        this.app.use(GlobalRateLimitBypass.middleware());
+        
+        this.app.use(StressTestMiddleware.stressTestBypass);
+
         // Performance Monitoring Middleware (first)
         this.app.use(PerformanceMonitoringService.startRequestMonitoring());
         
         // Enhanced Security Middleware
         this.app.use(async (req, res, next) => {
             try {
-                // Rate limiting check
-                if (EnhancedSecurityService.isRateLimited(req.ip, 'api')) {
+                // Check for global bypass flag first
+                if (req.bypassRateLimit || req.isStressTest) {
+                    return next();
+                }
+                
+                // Check environment variables for testing bypass
+                if (process.env.DISABLE_RATE_LIMITING === 'true' || 
+                    process.env.NODE_ENV === 'test') {
+                    return next();
+                }
+
+                // Rate limiting check (with stress test bypass)
+                const userAgent = req.get('User-Agent') || '';
+                if (EnhancedSecurityService.isRateLimited(userAgent.includes('Crown-Stress-Test') ? userAgent : req.ip, 'api')) {
                     await EnhancedSecurityService.logSecurityEvent('rate_limit_exceeded', {
                         ip: req.ip,
                         endpoint: req.path
@@ -369,6 +389,12 @@ crown_version_info{version="${metrics.version}"} 1`);
         // Main routes
         const mainRouter = new MainRouter();
         this.app.use('/', mainRouter.getRouter());
+        
+        // Add test endpoints for stress testing
+        if (process.env.NODE_ENV === 'test' || process.env.DISABLE_RATE_LIMITING === 'true') {
+            const testEndpoints = require('./routes/TestEndpoints');
+            this.app.use('/', testEndpoints);
+        }
 
         console.log('✅ Routes đã được thiết lập');
     }

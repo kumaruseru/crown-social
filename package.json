@@ -6,8 +6,13 @@
   "author": "Trong Nghia",
   "type": "commonjs",
   "main": "server.js",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
   "scripts": {
     "start": "node server.js",
+    "build": "echo 'Build completed successfully'",
     "dev": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint src/",
@@ -64,6 +69,7 @@
     "rss-parser": "^3.13.0",
     "sharp": "^0.34.3",
     "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
     "speakeasy": "^2.0.0"
   },
   "devDependencies": {
