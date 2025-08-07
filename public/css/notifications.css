@@ -1,0 +1,322 @@
+/* Notifications Page Styles with Theme Support */
+
+:root {
+    /* Light theme variables */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8fafc;
+    --bg-glass: rgba(255, 255, 255, 0.8);
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --text-muted: #94a3b8;
+    --border-color: #e2e8f0;
+    --scrollbar-track: rgba(226, 232, 240, 0.5);
+    --scrollbar-thumb: #cbd5e1;
+    --scrollbar-thumb-hover: #94a3b8;
+    --glass-border: rgba(0, 0, 0, 0.1);
+    --hover-bg: rgba(0, 0, 0, 0.05);
+    --button-hover: #f1f5f9;
+    --input-bg: #f8fafc;
+    --input-border: #e2e8f0;
+}
+
+[data-theme="dark"] {
+    /* Dark theme variables */
+    --bg-primary: #0c101d;
+    --bg-secondary: #1e293b;
+    --bg-glass: rgba(23, 25, 35, 0.3);
+    --text-primary: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --border-color: #334155;
+    --scrollbar-track: rgba(45, 55, 72, 0.5);
+    --scrollbar-thumb: #4a5568;
+    --scrollbar-thumb-hover: #718096;
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --hover-bg: rgba(51, 65, 85, 0.5);
+    --button-hover: #334155;
+    --input-bg: rgba(51, 65, 85, 0.8);
+    --input-border: #334155;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+}
+
+.glass-card {
+    background: var(--bg-glass);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+}
+
+.tab-active {
+    border-bottom-color: #FBBF24;
+    color: #FBBF24;
+}
+
+.unread-dot {
+    background-color: #FBBF24;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(251, 191, 36, 0.6);
+}
+
+/* Notification animations */
+.notification-item {
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.notification-item.animate-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.notification-item:hover {
+    background-color: var(--hover-bg);
+}
+
+.notification-item.unread {
+    background-color: rgba(251, 191, 36, 0.05);
+    border-left: 3px solid #FBBF24;
+}
+
+.notification-item.read {
+    opacity: 0.8;
+}
+
+/* Notification types */
+.notification-icon {
+    transition: transform 0.2s ease;
+}
+
+.notification-item:hover .notification-icon {
+    transform: scale(1.1);
+}
+
+.notification-follow {
+    color: #3B82F6;
+}
+
+.notification-like {
+    color: #EF4444;
+}
+
+.notification-comment {
+    color: #10B981;
+}
+
+.notification-mention {
+    color: #F59E0B;
+}
+
+.notification-repost {
+    color: #8B5CF6;
+}
+
+/* Avatar stack for multiple users */
+.avatar-stack {
+    display: flex;
+    margin-left: -0.5rem;
+}
+
+.avatar-stack .avatar {
+    border: 2px solid var(--bg-primary);
+    margin-left: -0.5rem;
+    transition: transform 0.2s ease;
+}
+
+.avatar-stack .avatar:hover {
+    transform: translateY(-2px);
+    z-index: 10;
+}
+
+/* Loading states */
+.notification-skeleton {
+    background: linear-gradient(90deg, var(--border-color) 25%, var(--text-muted) 50%, var(--border-color) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 0.375rem;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Mark as read animation */
+.marking-read {
+    animation: mark-read 0.5s ease;
+}
+
+@keyframes mark-read {
+    0% {
+        background-color: rgba(251, 191, 36, 0.1);
+    }
+    50% {
+        background-color: rgba(251, 191, 36, 0.2);
+    }
+    100% {
+        background-color: transparent;
+    }
+}
+
+/* Empty state */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-muted);
+}
+
+.empty-state svg {
+    margin: 0 auto 1rem;
+    color: var(--text-secondary);
+}
+
+/* Load more button */
+#load-more {
+    position: relative;
+    overflow: hidden;
+}
+
+#load-more::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+#load-more:hover::before {
+    left: 100%;
+}
+
+/* Notification time formatting */
+.notification-time {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.notification-time.recent {
+    color: #FBBF24;
+    font-weight: 500;
+}
+
+/* Filter badges */
+.filter-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    background: rgba(251, 191, 36, 0.1);
+    color: #FBBF24;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-left: 0.5rem;
+}
+
+/* Notification actions */
+.notification-actions {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.notification-item:hover .notification-actions {
+    opacity: 1;
+}
+
+.notification-action {
+    padding: 0.25rem;
+    border-radius: 0.375rem;
+    color: var(--text-muted);
+    transition: all 0.2s ease;
+}
+
+.notification-action:hover {
+    background-color: var(--hover-bg);
+    color: #FBBF24;
+}
+
+/* Force theme overrides for Tailwind classes */
+[data-theme] .text-white {
+    color: var(--text-primary) !important;
+}
+
+[data-theme] .text-slate-400 {
+    color: var(--text-muted) !important;
+}
+
+[data-theme] .text-slate-200 {
+    color: var(--text-secondary) !important;
+}
+
+[data-theme] .bg-slate-800 {
+    background-color: var(--input-bg) !important;
+}
+
+[data-theme] .border-slate-700 {
+    border-color: var(--border-color) !important;
+}
+
+[data-theme] .border-slate-500 {
+    border-color: var(--text-muted) !important;
+}
+
+[data-theme] .hover\:text-slate-200:hover {
+    color: var(--text-secondary) !important;
+}
+
+[data-theme] .hover\:border-slate-500:hover {
+    border-color: var(--text-muted) !important;
+}
+
+[data-theme] .hover\:text-white:hover {
+    color: var(--text-primary) !important;
+}
+
+[data-theme] .hover\:border-slate-500:hover {
+    border-color: var(--text-muted) !important;
+}
+
+/* Input and button overrides */
+[data-theme] input[type="text"] {
+    background-color: var(--input-bg) !important;
+    border-color: var(--input-border) !important;
+    color: var(--text-primary) !important;
+}
+
+[data-theme] input[type="text"]:focus {
+    outline: none !important;
+    border-color: #FBBF24 !important;
+    box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.2) !important;
+}
+
+[data-theme] button:hover {
+    background-color: var(--button-hover) !important;
+}

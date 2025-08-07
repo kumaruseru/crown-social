@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập - Crown</title>
+    <link rel="icon" type="image/svg+xml" href="/public/favicon.svg">
+    <link rel="icon" type="image/png" href="/public/favicon.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="public/css/login.css">
+</head>
+<body>
+    <canvas id="particle-canvas"></canvas>
+
+    <div class="auth-container">
+        <div class="login-card-container">
+            <div class="login-card bg-white/10 backdrop-blur-lg p-8 rounded-2xl shadow-2xl border border-white/20">
+                <div class="flex flex-col items-center justify-center mb-8">
+                    <svg class="w-12 h-12 text-yellow-400 mb-3" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2L8.25 8.5L2 9.25L7 14L5.5 20.5L12 17L18.5 20.5L17 14L22 9.25L15.75 8.5L12 2Z" />
+                        <path d="M12 5.5L13.85 9.55L18.25 10.1L15.25 13.2L16.15 17.55L12 15.3L7.85 17.55L8.75 13.2L5.75 10.1L10.15 9.55L12 5.5Z" />
+                    </svg>
+                    <h1 class="text-4xl font-bold text-white tracking-wider">Crown</h1>
+                </div>
+                
+                <form action="#" method="POST">
+                    <div class="mb-5 floating-label-group">
+                        <input type="email" id="email" name="email" class="floating-input w-full px-4 py-3 bg-gray-800/50 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 transition duration-300" placeholder=" " required>
+                        <label for="email" class="floating-label">Email hoặc Tên đăng nhập</label>
+                    </div>
+                    
+                    <div class="mb-6 floating-label-group relative">
+                        <input type="password" id="password" name="password" class="floating-input w-full px-4 py-3 bg-gray-800/50 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 transition duration-300" placeholder=" " required>
+                        <label for="password" class="floating-label">Mật khẩu</label>
+                        <button type="button" id="togglePassword" class="absolute top-1/2 right-4 transform -translate-y-1/2 text-gray-400 hover:text-yellow-400">
+                            <svg id="eye-closed" class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 11-4.243-4.243m4.242 4.242L9.88 9.88" />
+                            </svg>
+                            <svg id="eye-open" class="w-5 h-5 hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="flex items-center justify-between mb-6">
+                        <label class="flex items-center text-sm text-gray-300">
+                            <input type="checkbox" class="mr-2 rounded border-gray-300 text-yellow-400 focus:ring-yellow-400">
+                            Ghi nhớ đăng nhập
+                        </label>
+                        <a href="/forgot-password" class="text-sm text-yellow-400 hover:underline">Quên mật khẩu?</a>
+                    </div>
+
+                    <button type="submit" class="w-full bg-yellow-400 text-gray-900 font-bold py-3 px-4 rounded-lg transform hover:scale-105 transition-all duration-300 shadow-lg shadow-yellow-500/20 shine-button">
+                        Đăng nhập
+                    </button>
+                </form>
+
+                <div class="my-6 flex items-center">
+                    <div class="flex-grow border-t border-gray-600"></div>
+                    <span class="mx-4 text-sm text-gray-400">hoặc</span>
+                    <div class="flex-grow border-t border-gray-600"></div>
+                </div>
+
+                <div class="space-y-4">
+                    <a href="/api/auth/google" class="w-full flex items-center justify-center py-2.5 px-4 bg-white/90 border border-gray-300 rounded-lg hover:bg-white transition duration-300 group text-decoration-none">
+                        <img src="https://www.google.com/favicon.ico" alt="Google icon" class="w-5 h-5 mr-3 transform group-hover:scale-110 transition-transform">
+                        <span class="font-semibold text-gray-800">Đăng nhập với Google</span>
+                    </a>
+                    <a href="/api/auth/facebook" class="w-full flex items-center justify-center py-2.5 px-4 bg-white/90 border border-gray-300 rounded-lg hover:bg-white transition duration-300 group text-decoration-none">
+                        <svg class="w-5 h-5 mr-3 transform group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
+                            <path fill="#1877F2" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                        </svg>
+                        <span class="font-semibold text-gray-800">Đăng nhập với Facebook</span>
+                    </a>
+                </div>
+
+                 <p class="text-center text-gray-400 mt-8">
+                     Chưa có tài khoản? <a href="register.html" class="font-semibold text-yellow-400 hover:underline">Đăng ký ngay</a>
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="public/js/login.js"></script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang chủ - Crown</title>
+    <link rel="icon" type="image/svg+xml" href="public/favicon.svg">
+    <link rel="icon" type="image/png" href="public/favicon.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/public/css/home.css">
+    <link rel="stylesheet" href="/public/css/navigation.css">
+</head>
+<body class="min-h-screen">
+
+    <div class="flex">
+        <!-- Main Navigation Placeholder -->
+        <div id="main-navigation-placeholder"></div>
+
+        <main class="flex-1 ml-0 sm:ml-24 lg:ml-72 mr-0 xl:mr-96 transition-all duration-300">
+            <div class="max-w-2xl mx-auto py-8 px-4">
+                
+                <div class="glass-card p-4 rounded-lg shadow-lg mb-6">
+                    <div class="flex items-start">
+                        <img src="https://placehold.co/48x48/FBBF24/0C101D?text=U" alt="Avatar" class="w-12 h-12 rounded-full mr-4">
+                        <textarea class="w-full p-3 bg-black/10 dark:bg-slate-800/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 text-slate-900 dark:text-slate-200 no-resize" rows="3" placeholder="Bạn đang nghĩ gì?"></textarea>
+                    </div>
+                    <div class="flex justify-between items-center mt-4">
+                        <div class="flex space-x-4 text-slate-600 dark:text-slate-400">
+                            <button class="hover:text-yellow-400 transition-colors"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg></button>
+                            <button class="hover:text-yellow-400 transition-colors"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg></button>
+                            <button class="hover:text-yellow-400 transition-colors"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg></button>
+                        </div>
+                        <button class="bg-yellow-400 text-gray-900 font-semibold py-2 px-6 rounded-full hover:bg-yellow-500 transition duration-300">Đăng</button>
+                    </div>
+                </div>
+
+                <!-- Posts Container - Dynamic content will be loaded here -->
+                <div id="posts-container" class="space-y-6">
+                    <!-- Posts will be loaded dynamically via JavaScript -->
+                    <div class="glass-card p-8 rounded-lg text-center">
+                        <div class="text-slate-600 dark:text-gray-400 mb-4">
+                            <svg class="w-16 h-16 mx-auto animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                                </path>
+                            </svg>
+                        </div>
+                        <p class="text-slate-600 dark:text-gray-400">Đang tải bài đăng...</p>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <aside class="w-80 fixed right-0 h-full p-6 hidden xl:block">
+             <div class="sticky top-6">
+                <div class="relative mb-6">
+                    <input type="text" placeholder="Tìm kiếm trên Crown" class="w-full py-2 pl-10 pr-4 bg-white/70 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-full focus:outline-none focus:ring-2 focus:ring-yellow-400 text-slate-900 dark:text-slate-200">
+                    <svg class="w-5 h-5 text-slate-500 dark:text-slate-400 absolute top-1/2 left-3 transform -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </div>
+
+                <div class="glass-card rounded-lg p-4 mb-6">
+                    <h3 class="font-bold text-lg mb-4 text-slate-900 dark:text-white">Xu hướng cho bạn</h3>
+                    <ul>
+                        <li class="mb-3"><p class="text-slate-600 dark:text-slate-500 text-sm">Công nghệ · Xu hướng</p><a href="#" class="font-bold text-slate-900 dark:text-slate-200 hover:underline">#AI_Vietnam</a><p class="text-slate-600 dark:text-slate-500 text-sm">15.2k bài viết</p></li>
+                        <li class="mb-3"><p class="text-slate-600 dark:text-slate-500 text-sm">Du lịch · Xu hướng</p><a href="#" class="font-bold text-slate-900 dark:text-slate-200 hover:underline">#Phuot_HaGiang</a><p class="text-slate-600 dark:text-slate-500 text-sm">8,7k bài viết</p></li>
+                    </ul>
+                </div>
+
+                <div class="glass-card rounded-lg p-4">
+                    <h3 class="font-bold text-lg mb-4 text-slate-900 dark:text-white">Gợi ý theo dõi</h3>
+                    <ul>
+                        <li class="flex items-center justify-between mb-4">
+                            <div class="flex items-center"><img src="https://placehold.co/40x40/F472B6/831843?text=C" alt="Avatar" class="w-10 h-10 rounded-full"><div class="ml-3"><h4 class="font-bold text-slate-900 dark:text-slate-200">Chi Mai</h4><p class="text-sm text-slate-600 dark:text-slate-400">@chimaidev</p></div></div>
+                            <button class="bg-slate-900 dark:bg-slate-200 text-white dark:text-slate-900 font-semibold py-1 px-4 rounded-full text-sm hover:bg-slate-800 dark:hover:bg-white transition-colors">Theo dõi</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- Mobile Navigation Placeholder -->
+        <div id="mobile-navigation-placeholder"></div>
+    </div>
+    
+    <script src="/public/js/avatar-utils.js"></script>
+    <script src="/public/js/navigation.js"></script>
+    <script src="/public/js/home.js"></script>
+</body>
+</html>

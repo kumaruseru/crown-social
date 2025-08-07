@@ -1,0 +1,306 @@
+/* Navigation Styles */
+
+/* Theme variables */
+:root {
+    /* Dark mode (default) */
+    --nav-bg: rgba(15, 23, 42, 0.8);
+    --nav-border: rgba(255, 255, 255, 0.1);
+    --nav-text: #e2e8f0;
+    --nav-text-secondary: #94a3b8;
+    --nav-text-active: #FBBF24;
+    --nav-hover-bg: rgba(255, 255, 255, 0.05);
+    --nav-active-bg: rgba(255, 255, 255, 0.1);
+    --body-bg: #0f172a;
+}
+
+/* Light mode */
+[data-theme="light"] {
+    --nav-bg: rgba(255, 255, 255, 0.9);
+    --nav-border: rgba(0, 0, 0, 0.1);
+    --nav-text: #1e293b;
+    --nav-text-secondary: #64748b;
+    --nav-text-active: #d97706;
+    --nav-hover-bg: rgba(0, 0, 0, 0.05);
+    --nav-active-bg: rgba(217, 119, 6, 0.1);
+    --body-bg: #f8fafc;
+}
+
+/* Auto theme based on system preference */
+@media (prefers-color-scheme: light) {
+    :root {
+        --nav-bg: rgba(255, 255, 255, 0.9);
+        --nav-border: rgba(0, 0, 0, 0.1);
+        --nav-text: #1e293b;
+        --nav-text-secondary: #64748b;
+        --nav-text-active: #d97706;
+        --nav-hover-bg: rgba(0, 0, 0, 0.05);
+        --nav-active-bg: rgba(217, 119, 6, 0.1);
+        --body-bg: #f8fafc;
+    }
+}
+
+/* Main Sidebar Navigation */
+.nav-item {
+    transition: all 0.3s ease;
+    position: relative;
+    color: var(--nav-text);
+}
+
+.nav-item:hover {
+    transform: translateX(4px);
+    background: var(--nav-hover-bg);
+    color: var(--nav-text-active);
+}
+
+.nav-item.active {
+    background: var(--nav-active-bg);
+    color: var(--nav-text-active);
+    font-weight: 600;
+}
+
+.nav-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 0;
+    background: var(--nav-text-active);
+    border-radius: 0 2px 2px 0;
+    transition: height 0.3s ease;
+}
+
+.nav-item.active::before {
+    height: 60%;
+}
+
+/* Logo animation */
+.logo-crown {
+    animation: logoGlow 3s ease-in-out infinite;
+    color: var(--nav-text-active);
+}
+
+@keyframes logoGlow {
+    0%, 100% {
+        filter: drop-shadow(0 0 5px rgba(251, 191, 36, 0.3));
+    }
+    50% {
+        filter: drop-shadow(0 0 15px rgba(251, 191, 36, 0.6));
+    }
+}
+
+/* Light mode logo glow */
+[data-theme="light"] .logo-crown {
+    animation: logoGlowLight 3s ease-in-out infinite;
+}
+
+@keyframes logoGlowLight {
+    0%, 100% {
+        filter: drop-shadow(0 0 3px rgba(217, 119, 6, 0.4));
+    }
+    50% {
+        filter: drop-shadow(0 0 8px rgba(217, 119, 6, 0.7));
+    }
+}
+
+/* Navigation text hiding/showing animation */
+.nav-text {
+    transition: all 0.3s ease;
+}
+
+.nav-text.hiding {
+    opacity: 0;
+    transform: translateX(-10px);
+}
+
+/* Mobile Navigation */
+.mobile-nav-item {
+    transition: all 0.2s ease;
+    position: relative;
+    color: var(--nav-text-secondary);
+}
+
+.mobile-nav-item:active {
+    transform: scale(0.95);
+}
+
+.mobile-nav-item.active {
+    color: var(--nav-text-active);
+}
+
+.mobile-nav-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    background: var(--nav-text-active);
+    border-radius: 50%;
+}
+
+/* Glass effect for navigation */
+.glass-navigation,
+.glass-card {
+    background: var(--nav-bg);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--nav-border);
+}
+
+/* User profile hover effect */
+.user-profile {
+    transition: all 0.3s ease;
+}
+
+.user-profile:hover {
+    background: var(--nav-hover-bg);
+}
+
+.user-profile:hover .user-avatar {
+    transform: scale(1.1);
+}
+
+/* Responsive navigation styles */
+@media (max-width: 1023px) {
+    .nav-text {
+        display: none;
+    }
+}
+
+@media (max-width: 639px) {
+    .mobile-nav-item span {
+        font-size: 0.7rem;
+    }
+}
+
+/* Navigation collapse animation */
+.sidebar-collapsed {
+    width: 80px !important;
+}
+
+.sidebar-collapsed .nav-text {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.sidebar-collapsed .logo-text {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Navigation badge (for notifications) */
+.nav-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #EF4444;
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 0.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    border: 2px solid #0F172A;
+}
+
+/* Smooth transitions for all navigation elements */
+* {
+    transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Focus states for accessibility */
+.nav-item:focus,
+.mobile-nav-item:focus {
+    outline: 2px solid #FBBF24;
+    outline-offset: 2px;
+}
+
+/* Loading skeleton for navigation */
+.nav-skeleton {
+    background: linear-gradient(90deg, #1E293B 25%, #334155 50%, #1E293B 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Light Mode Optimizations */
+
+/* Improved glass effect for light mode */
+[data-theme="light"] .glass-card {
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Theme transition */
+* {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Body theme styling */
+body.theme-light {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    color: #1e293b;
+}
+
+body.theme-dark {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #e2e8f0;
+}
+
+/* Text colors for themes */
+.theme-light .text-white {
+    color: #1e293b !important;
+}
+
+.theme-light .text-slate-300,
+.theme-light .text-slate-400 {
+    color: #64748b !important;
+}
+
+.theme-light .text-yellow-400 {
+    color: #d97706 !important;
+}
+
+/* Theme toggle button styling */
+#theme-toggle {
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+#theme-toggle:hover {
+    transform: scale(1.05);
+}
+
+/* Active page indicator for light mode */
+[data-theme="light"] .nav-item.active {
+    background: rgba(217, 119, 6, 0.15);
+    color: #d97706;
+}
+
+[data-theme="light"] .nav-item::before {
+    background: #d97706;
+}
+
+/* Mobile navigation for light mode */
+[data-theme="light"] .mobile-nav-item.active {
+    color: #d97706;
+}
+
+[data-theme="light"] .mobile-nav-item.active::after {
+    background: #d97706;
+}

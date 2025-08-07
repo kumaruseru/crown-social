@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đang gọi...</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="/public/css/calls/outgoing-call.css">
+</head>
+<body class="bg-gray-900">
+
+    <!-- Container chính của cuộc gọi đi -->
+    <div id="outgoing-call-screen" class="relative w-full h-screen flex flex-col justify-center items-center text-white overflow-hidden">
+        
+        <!-- Nền mờ -->
+        <div class="background-blur absolute inset-0 w-full h-full bg-cover bg-center z-0"></div>
+        
+        <!-- Lớp phủ tối -->
+        <div class="absolute inset-0 bg-black/50 z-10"></div>
+
+        <!-- Nội dung cuộc gọi -->
+        <div class="relative z-20 flex flex-col items-center justify-between h-full py-16 w-full">
+            
+            <!-- Thông tin người được gọi (phần trên) -->
+            <div class="text-center slide-up-animation caller-info">
+                <div class="avatar-with-pulse">
+                    <!-- SVG Pulse Ring cho outgoing call -->
+                    <svg class="pulse-ring" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="100" cy="100" r="85" fill="none" stroke="rgba(248, 113, 113, 0.6)" stroke-width="3">
+                            <animate attributeName="r" values="85;105;85" dur="1.8s" repeatCount="indefinite"/>
+                            <animate attributeName="stroke-opacity" values="0.8;0.2;0.8" dur="1.8s" repeatCount="indefinite"/>
+                            <animate attributeName="stroke-width" values="3;1;3" dur="1.8s" repeatCount="indefinite"/>
+                        </circle>
+                        <circle cx="100" cy="100" r="80" fill="none" stroke="rgba(248, 113, 113, 0.4)" stroke-width="2">
+                            <animate attributeName="r" values="80;100;80" dur="1.8s" begin="0.3s" repeatCount="indefinite"/>
+                            <animate attributeName="stroke-opacity" values="0.6;0.1;0.6" dur="1.8s" begin="0.3s" repeatCount="indefinite"/>
+                            <animate attributeName="stroke-width" values="2;0.8;2" dur="1.8s" begin="0.3s" repeatCount="indefinite"/>
+                        </circle>
+                        <circle cx="100" cy="100" r="75" fill="none" stroke="rgba(248, 113, 113, 0.2)" stroke-width="1">
+                            <animate attributeName="r" values="75;95;75" dur="1.8s" begin="0.6s" repeatCount="indefinite"/>
+                            <animate attributeName="stroke-opacity" values="0.4;0;0.4" dur="1.8s" begin="0.6s" repeatCount="indefinite"/>
+                        </circle>
+                    </svg>
+                    <!-- Avatar Image -->
+                    <img id="callee-avatar" 
+                         src="https://placehold.co/128x128/f87171/ffffff?text=H" 
+                         alt="Avatar người được gọi" 
+                         class="avatar-image rounded-full border-4 border-white/50 object-cover">
+                </div>
+                <h1 id="callee-name" class="text-4xl font-bold mt-6">Bò Húc</h1>
+                <p id="call-status" class="text-lg text-gray-300 mt-2">Đang gọi...</p>
+            </div>
+
+            <!-- Các nút hành động (phần dưới) -->
+            <div class="w-full px-8 slide-up-animation action-buttons">
+                <div class="flex justify-center items-center">
+                    <!-- Nút Kết thúc cuộc gọi -->
+                    <div class="text-center">
+                        <button id="end-call" class="w-20 h-20 bg-red-500 rounded-full flex items-center justify-center transform hover:scale-110 transition-transform duration-300" title="Kết thúc cuộc gọi">
+                            <i data-lucide="phone-off" class="w-10 h-10 text-white"></i>
+                        </button>
+                        <span class="mt-2 block font-semibold">Kết thúc</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="/public/js/calls/call-audio.js"></script>
+    <script src="/public/js/calls/outgoing-call.js"></script>
+</body>
+</html>

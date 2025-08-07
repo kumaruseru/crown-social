@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Screen Share</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center">
+    <div class="max-w-md w-full mx-4">
+        <h1 class="text-2xl font-bold text-center mb-8">Test Screen Share</h1>
+        
+        <div class="space-y-4">
+            <button id="start-share" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg transition-all">
+                Bắt đầu chia sẻ màn hình
+            </button>
+            
+            <button id="stop-share" class="w-full bg-red-600 hover:bg-red-700 text-white py-3 px-4 rounded-lg transition-all" disabled>
+                Dừng chia sẻ màn hình
+            </button>
+            
+            <div id="status" class="text-center text-gray-400">
+                Sẵn sàng để test
+            </div>
+        </div>
+        
+        <div class="mt-8">
+            <video id="screen-video" class="w-full rounded-lg bg-gray-800" autoplay muted style="display: none;"></video>
+        </div>
+    </div>
+
+    <script>
+        const startBtn = document.getElementById('start-share');
+        const stopBtn = document.getElementById('stop-share');
+        const status = document.getElementById('status');
+        const video = document.getElementById('screen-video');
+        
+        let screenStream = null;
+        
+        // Check support
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+            status.textContent = 'Trình duyệt không hỗ trợ getDisplayMedia';
+            startBtn.disabled = true;
+        }
+        
+        startBtn.addEventListener('click', async () => {
+            try {
+                status.textContent = 'Đang yêu cầu chia sẻ màn hình...';
+                
+                screenStream = await navigator.mediaDevices.getDisplayMedia({
+                    video: {
+                        width: { ideal: 1920 },
+                        height: { ideal: 1080 },
+                        frameRate: { ideal: 30 }
+                    },
+                    audio: true
+                });
+                
+                video.srcObject = screenStream;
+                video.style.display = 'block';
+                
+                status.textContent = 'Đang chia sẻ màn hình';
+                startBtn.disabled = true;
+                stopBtn.disabled = false;
+                
+                // Listen for stream end
+                screenStream.getVideoTracks()[0].addEventListener('ended', () => {
+                    stopScreenShare();
+                });
+                
+            } catch (error) {
+                console.error('Error:', error);
+                status.textContent = `Lỗi: ${error.message}`;
+            }
+        });
+        
+        stopBtn.addEventListener('click', stopScreenShare);
+        
+        function stopScreenShare() {
+            if (screenStream) {
+                screenStream.getTracks().forEach(track => track.stop());
+                screenStream = null;
+            }
+            
+            video.srcObject = null;
+            video.style.display = 'none';
+            
+            status.textContent = 'Đã dừng chia sẻ màn hình';
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
+        }
+    </script>
+</body>
+</html>

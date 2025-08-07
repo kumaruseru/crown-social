@@ -1,0 +1,424 @@
+/*
+ * Incoming Call Styles  
+ * CSS cho trang cuộc gọi đến
+ */
+
+body {
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+}
+
+/* Hiệu ứng nền mờ với chuyển động */
+.background-blur {
+    background-image: url('https://placehold.co/600x800/22c55e/ffffff?text=Avatar');
+    filter: blur(25px) brightness(0.4);
+    transform: scale(1.1);
+    animation: background-pulse 3s infinite alternate;
+}
+
+@keyframes background-pulse {
+    0% {
+        filter: blur(25px) brightness(0.4);
+        transform: scale(1.1);
+    }
+    100% {
+        filter: blur(20px) brightness(0.5);
+        transform: scale(1.15);
+    }
+}
+
+/* Ring overlay animation */
+.ring-overlay {
+    background: radial-gradient(circle at center, transparent 30%, rgba(34, 197, 94, 0.1) 70%);
+    animation: ring-pulse 2s infinite;
+}
+
+@keyframes ring-pulse {
+    0%, 100% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.6;
+        transform: scale(1.05);
+    }
+}
+
+/* Hiệu ứng trượt lên */
+@keyframes slide-up {
+    from {
+        transform: translateY(100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.slide-up-animation {
+    animation: slide-up 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+.caller-info {
+    animation-delay: 0.1s;
+}
+
+.notification-area {
+    animation-delay: 0.3s;
+}
+
+.action-buttons {
+    animation-delay: 0.5s;
+}
+
+/* Avatar với SVG pulse ring cho incoming call */
+.avatar-with-pulse {
+    position: relative;
+    display: inline-block;
+    width: 10rem;
+    height: 10rem;
+}
+
+.pulse-ring {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.avatar-image {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8rem;
+    height: 8rem;
+    object-fit: cover;
+    object-position: center;
+    z-index: 10;
+}
+
+/* Pulsing text effect */
+@keyframes text-pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.02);
+    }
+}
+
+.pulsing-text {
+    animation: text-pulse 2s infinite;
+}
+
+/* Action buttons styling */
+.accept-button {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    box-shadow: 0 8px 25px rgba(34, 197, 94, 0.4);
+    transition: all 0.3s ease;
+}
+
+.accept-button:hover {
+    transform: scale(1.15);
+    box-shadow: 0 12px 35px rgba(34, 197, 94, 0.6);
+}
+
+.reject-button {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+    transition: all 0.3s ease;
+}
+
+.reject-button:hover {
+    transform: scale(1.15);
+    box-shadow: 0 12px 35px rgba(239, 68, 68, 0.6);
+}
+
+/* Quick action buttons */
+#quick-message,
+#remind-me {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+#quick-message:hover,
+#remind-me:hover {
+    background: rgba(55, 65, 81, 0.8);
+    transform: scale(1.1);
+}
+
+/* Swipe indicators */
+.swipe-indicator {
+    animation-delay: 1s;
+}
+
+.swipe-indicator .animate-bounce:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.swipe-indicator .animate-bounce:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.swipe-indicator .animate-bounce:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+/* Notification area styling */
+.notification-area .bg-black\/30 {
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Quick message popup */
+#quick-message-popup {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+#quick-message-popup.open {
+    transform: translateY(0);
+}
+
+.quick-reply {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+}
+
+.quick-reply:hover {
+    background: rgba(75, 85, 99, 0.6);
+    transform: translateX(8px);
+}
+
+/* Call type indicator */
+#call-type {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Breathing animation for entire screen */
+@keyframes breathing {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.01);
+    }
+}
+
+#incoming-call-screen {
+    animation: breathing 4s infinite;
+}
+
+/* Mobile touch interactions */
+@media (max-width: 768px) {
+    /* Swipe gesture hints */
+    .action-buttons::before {
+        content: '';
+        position: absolute;
+        top: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 2px;
+        animation: swipe-hint 3s infinite;
+    }
+    
+    @keyframes swipe-hint {
+        0%, 100% {
+            opacity: 0.3;
+        }
+        50% {
+            opacity: 0.8;
+        }
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .avatar-with-pulse {
+        width: 8rem;
+        height: 8rem;
+    }
+    
+    .avatar-image {
+        width: 6.5rem;
+        height: 6.5rem;
+    }
+    
+    .avatar-ring,
+    .avatar-ring-2,
+    .avatar-ring-3 {
+        width: 8rem;
+        height: 8rem;
+    }
+    
+    .avatar-ring-2 {
+        width: 9rem;
+        height: 9rem;
+        top: -0.5rem;
+        left: -0.5rem;
+    }
+    
+    .avatar-ring-3 {
+        width: 10rem;
+        height: 10rem;
+        top: -1rem;
+        left: -1rem;
+    }
+    
+    #caller-name {
+        font-size: 2rem;
+    }
+    
+    #call-status {
+        font-size: 1.125rem;
+    }
+    
+    #call-type {
+        font-size: 1rem;
+    }
+    
+    .accept-button,
+    .reject-button {
+        width: 4.5rem;
+        height: 4.5rem;
+    }
+    
+    .accept-button i,
+    .reject-button i {
+        width: 2rem;
+        height: 2rem;
+    }
+    
+    #quick-message,
+    #remind-me {
+        width: 3rem;
+        height: 3rem;
+    }
+    
+    #quick-message i,
+    #remind-me i {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+}
+
+@media (max-width: 480px) {
+    #caller-avatar {
+        width: 7rem;
+        height: 7rem;
+    }
+    
+    .avatar-ring {
+        width: 7rem;
+        height: 7rem;
+    }
+    
+    .avatar-ring-2 {
+        width: 8rem;
+        height: 8rem;
+    }
+    
+    .avatar-ring-3 {
+        width: 9rem;
+        height: 9rem;
+    }
+    
+    #caller-name {
+        font-size: 1.75rem;
+    }
+    
+    #call-status {
+        font-size: 1rem;
+    }
+    
+    .accept-button,
+    .reject-button {
+        width: 4rem;
+        height: 4rem;
+    }
+    
+    .accept-button i,
+    .reject-button i {
+        width: 1.75rem;
+        height: 1.75rem;
+    }
+    
+    .notification-area {
+        padding: 0 1rem;
+    }
+    
+    .action-buttons {
+        padding: 0 1.5rem;
+    }
+    
+    .action-buttons .space-x-12 > * + * {
+        margin-left: 2rem;
+    }
+}
+
+/* Dark mode enhancements */
+@media (prefers-color-scheme: dark) {
+    .notification-area .bg-black\/30 {
+        background: rgba(0, 0, 0, 0.5);
+        border-color: rgba(255, 255, 255, 0.15);
+    }
+    
+    .quick-reply {
+        background: rgba(55, 65, 81, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+    .background-blur {
+        animation: none;
+    }
+    
+    .ring-overlay {
+        animation: none;
+    }
+    
+    .avatar-ring,
+    .avatar-ring-2,
+    .avatar-ring-3 {
+        animation: none;
+    }
+    
+    .pulsing-text {
+        animation: none;
+    }
+    
+    #incoming-call-screen {
+        animation: none;
+    }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    .accept-button {
+        border: 2px solid #ffffff;
+    }
+    
+    .reject-button {
+        border: 2px solid #ffffff;
+    }
+    
+    #caller-name {
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    }
+}

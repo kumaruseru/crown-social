@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Navigation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/public/css/navigation.css">
+</head>
+<body class="min-h-screen">
+    <div class="flex">
+        <!-- Navigation placeholder -->
+        <div id="main-navigation-placeholder"></div>
+        
+        <main class="flex-1 ml-0 sm:ml-24 lg:ml-72 p-8">
+            <h1 class="text-white text-2xl">Test Navigation Page</h1>
+            <p class="text-slate-300">This page is for testing navigation user display.</p>
+            
+            <div class="mt-4">
+                <button onclick="testUserUpdate()" class="bg-yellow-400 text-black px-4 py-2 rounded">
+                    Test Manual User Update
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Mobile Navigation placeholder -->
+    <div id="mobile-navigation-placeholder"></div>
+
+    <!-- Scripts -->
+    <script src="/public/js/avatar-utils.js"></script>
+    <script src="/public/js/navigation.js"></script>
+    
+    <script>
+        // Test function
+        function testUserUpdate() {
+            const testUser = {
+                firstName: 'Test',
+                lastName: 'User',
+                username: 'testuser',
+                avatar: 'https://placehold.co/48x48/FBBF24/0C101D?text=TU'
+            };
+            
+            console.log('🧪 Testing manual user update...');
+            if (window.navigationManager && window.navigationManager.updateUserDisplay) {
+                window.navigationManager.updateUserDisplay(testUser);
+            } else {
+                console.error('❌ Navigation manager not available');
+            }
+        }
+    </script>
+</body>
+</html>

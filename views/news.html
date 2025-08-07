@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Báo - Crown</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/public/css/news.css">
+    <link rel="stylesheet" href="/public/css/navigation.css">
+    <script>
+        // Theme detection and initialization
+        (function() {
+            const theme = localStorage.getItem('theme') || 
+                         (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+        })();
+    </script>
+</head>
+<body class="min-h-screen" data-theme>
+
+    <div class="flex">
+        <!-- Navigation placeholder - will be populated by navigation.js -->
+        <div id="main-navigation-placeholder"></div>
+
+        <!-- Main Content -->
+        <main class="flex-1 ml-0 sm:ml-24 lg:ml-72 transition-all duration-300">
+            <div class="max-w-7xl mx-auto py-8 px-4">
+                
+                <div class="mb-6">
+                    <h1 class="text-3xl font-bold text-white mb-4">Báo</h1>
+                    <div class="relative">
+                        <input type="text" placeholder="Tìm kiếm tin tức, chủ đề..." class="w-full py-3 pl-12 pr-4 bg-slate-800/80 border border-slate-700 rounded-full focus:outline-none focus:ring-2 focus:ring-yellow-400 text-slate-200">
+                        <svg class="w-6 h-6 text-slate-400 absolute top-1/2 left-4 transform -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </div>
+                </div>
+                
+                <!-- Filter Topics -->
+                <div class="mb-8 overflow-x-auto">
+                    <div id="category-filters" class="flex space-x-3">
+                        <!-- Categories will be loaded dynamically -->
+                    </div>
+                </div>
+
+                <!-- Featured News Grid -->
+                <div id="featured-news" class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+                    <!-- Featured news will be loaded dynamically -->
+                </div>
+
+                <!-- Hot Topics Section -->
+                <div>
+                    <h2 class="text-2xl font-bold text-white mb-4">Chủ đề nóng hổi</h2>
+                    <div id="hot-topics" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        <!-- Hot topics will be loaded dynamically -->
+                    </div>
+                </div>
+
+                <!-- Latest News Section -->
+                <div class="mt-12">
+                    <h2 class="text-2xl font-bold text-white mb-6">Tin tức mới nhất</h2>
+                    <div id="latest-news" class="space-y-4">
+                        <!-- Latest news will be loaded dynamically -->
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Mobile Navigation placeholder -->
+    <div id="mobile-navigation-placeholder"></div>
+
+    <!-- Avatar Utilities -->
+    <script src="/public/js/avatar-utils.js"></script>
+    <!-- Navigation System -->
+    <script src="/public/js/navigation.js"></script>
+    <!-- News Page JavaScript -->
+    <script src="/public/js/news.js"></script>
+</body>
+</html>

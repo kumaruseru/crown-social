@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuộc gọi đến</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="/public/css/calls/incoming-call.css">
+</head>
+<body class="bg-gray-900">
+
+    <!-- Container chính của cuộc gọi đến -->
+    <div id="incoming-call-screen" class="relative w-full h-screen flex flex-col justify-center items-center text-white overflow-hidden">
+        
+        <!-- Nền mờ với hiệu ứng động -->
+        <div class="background-blur absolute inset-0 w-full h-full bg-cover bg-center z-0"></div>
+        
+        <!-- Lớp phủ tối -->
+        <div class="absolute inset-0 bg-black/50 z-10"></div>
+
+        <!-- Ring animation overlay -->
+        <div class="ring-overlay absolute inset-0 z-15"></div>
+
+        <!-- Nội dung cuộc gọi -->
+        <div class="relative z-20 flex flex-col items-center justify-between h-full py-12 w-full">
+            
+            <!-- Thông tin người gọi (phần trên) -->
+            <div class="text-center slide-up-animation caller-info">
+                <div class="avatar-with-pulse">
+                    <!-- SVG Pulse Ring cho incoming call -->
+                    <svg class="pulse-ring" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="100" cy="100" r="88" fill="none" stroke="rgba(34, 197, 94, 0.7)" stroke-width="4">
+                            <animate attributeName="r" values="88;118;88" dur="2s" repeatCount="indefinite"/>
+                            <animate attributeName="stroke-opacity" values="0.9;0.1;0.9" dur="2s" repeatCount="indefinite"/>
+                            <animate attributeName="stroke-width" values="4;1;4" dur="2s" repeatCount="indefinite"/>
+                        </circle>
+                        <circle cx="100" cy="100" r="82" fill="none" stroke="rgba(34, 197, 94, 0.5)" stroke-width="3">
+                            <animate attributeName="r" values="82;112;82" dur="2s" begin="0.4s" repeatCount="indefinite"/>
+                            <animate attributeName="stroke-opacity" values="0.7;0.1;0.7" dur="2s" begin="0.4s" repeatCount="indefinite"/>
+                            <animate attributeName="stroke-width" values="3;0.8;3" dur="2s" begin="0.4s" repeatCount="indefinite"/>
+                        </circle>
+                        <circle cx="100" cy="100" r="76" fill="none" stroke="rgba(34, 197, 94, 0.3)" stroke-width="2">
+                            <animate attributeName="r" values="76;106;76" dur="2s" begin="0.8s" repeatCount="indefinite"/>
+                            <animate attributeName="stroke-opacity" values="0.5;0;0.5" dur="2s" begin="0.8s" repeatCount="indefinite"/>
+                            <animate attributeName="stroke-width" values="2;0.5;2" dur="2s" begin="0.8s" repeatCount="indefinite"/>
+                        </circle>
+                        <circle cx="100" cy="100" r="70" fill="none" stroke="rgba(34, 197, 94, 0.2)" stroke-width="1">
+                            <animate attributeName="r" values="70;100;70" dur="2s" begin="1.2s" repeatCount="indefinite"/>
+                            <animate attributeName="stroke-opacity" values="0.3;0;0.3" dur="2s" begin="1.2s" repeatCount="indefinite"/>
+                        </circle>
+                    </svg>
+                    <!-- Avatar Image -->
+                    <img id="caller-avatar" 
+                         src="https://placehold.co/160x160/22c55e/ffffff?text=AN" 
+                         alt="Avatar người gọi" 
+                         class="avatar-image rounded-full border-4 border-white/40 object-cover">
+                </div>
+                <h1 id="caller-name" class="text-4xl font-bold mt-8">An Nguyễn</h1>
+                <p id="call-status" class="text-xl text-green-400 mt-3 font-medium pulsing-text">Cuộc gọi đến...</p>
+                <div class="flex items-center justify-center mt-4 space-x-2">
+                    <i data-lucide="phone" class="w-5 h-5 text-gray-300"></i>
+                    <span id="call-type" class="text-lg text-gray-300">Cuộc gọi thoại</span>
+                </div>
+            </div>
+
+            <!-- Thông báo tùy chọn -->
+            <div class="notification-area slide-up-animation text-center px-8" style="animation-delay: 0.3s;">
+                <div class="bg-black/30 backdrop-blur-md rounded-2xl px-6 py-4 inline-block">
+                    <div class="flex items-center space-x-3">
+                        <i data-lucide="shield-check" class="w-5 h-5 text-green-400"></i>
+                        <span class="text-sm text-gray-200">Cuộc gọi được mã hóa end-to-end</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Các nút hành động (phần dưới) -->
+            <div class="w-full px-8 slide-up-animation action-buttons" style="animation-delay: 0.5s;">
+                
+                <!-- Quick actions (optional) -->
+                <div class="flex justify-center items-center space-x-6 mb-8">
+                    <button id="quick-message" class="w-14 h-14 bg-gray-700/60 backdrop-blur-sm rounded-full flex items-center justify-center transform hover:scale-110 transition-all duration-300" title="Gửi tin nhắn nhanh">
+                        <i data-lucide="message-circle" class="w-6 h-6 text-white"></i>
+                    </button>
+                    <button id="remind-me" class="w-14 h-14 bg-gray-700/60 backdrop-blur-sm rounded-full flex items-center justify-center transform hover:scale-110 transition-all duration-300" title="Nhắc tôi sau">
+                        <i data-lucide="clock" class="w-6 h-6 text-white"></i>
+                    </button>
+                </div>
+
+                <!-- Main action buttons -->
+                <div class="flex justify-center items-center space-x-12">
+                    
+                    <!-- Nút Từ chối -->
+                    <div class="text-center">
+                        <div class="relative">
+                            <button id="decline-call" class="w-20 h-20 bg-red-500 rounded-full flex items-center justify-center transform hover:scale-110 transition-all duration-300 reject-button" title="Từ chối cuộc gọi">
+                                <i data-lucide="phone-off" class="w-10 h-10 text-white"></i>
+                            </button>
+                            <!-- Swipe indicator -->
+                            <div class="swipe-indicator absolute -bottom-8 left-1/2 transform -translate-x-1/2">
+                                <div class="flex items-center space-x-1">
+                                    <div class="w-2 h-2 bg-red-400/60 rounded-full animate-bounce" style="animation-delay: 0s;"></div>
+                                    <div class="w-2 h-2 bg-red-400/60 rounded-full animate-bounce" style="animation-delay: 0.1s;"></div>
+                                    <div class="w-2 h-2 bg-red-400/60 rounded-full animate-bounce" style="animation-delay: 0.2s;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="mt-6 block text-lg font-semibold">Từ chối</span>
+                    </div>
+
+                    <!-- Nút Chấp nhận -->
+                    <div class="text-center">
+                        <div class="relative">
+                            <button id="accept-call" class="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center transform hover:scale-110 transition-all duration-300 accept-button" title="Chấp nhận cuộc gọi">
+                                <i data-lucide="phone" class="w-10 h-10 text-white"></i>
+                            </button>
+                            <!-- Swipe indicator -->
+                            <div class="swipe-indicator absolute -bottom-8 left-1/2 transform -translate-x-1/2">
+                                <div class="flex items-center space-x-1">
+                                    <div class="w-2 h-2 bg-green-400/60 rounded-full animate-bounce" style="animation-delay: 0s;"></div>
+                                    <div class="w-2 h-2 bg-green-400/60 rounded-full animate-bounce" style="animation-delay: 0.1s;"></div>
+                                    <div class="w-2 h-2 bg-green-400/60 rounded-full animate-bounce" style="animation-delay: 0.2s;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="mt-6 block text-lg font-semibold">Chấp nhận</span>
+                    </div>
+                </div>
+
+                <!-- Swipe hint text -->
+                <div class="text-center mt-8">
+                    <p class="text-sm text-gray-400 opacity-75">Trượt lên để chấp nhận, trượt xuống để từ chối</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Quick message popup -->
+        <div id="quick-message-popup" class="absolute bottom-0 left-0 right-0 bg-black/90 backdrop-blur-xl transform translate-y-full transition-transform duration-300 z-30">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold">Gửi tin nhắn nhanh</h3>
+                    <button id="close-quick-message" class="p-2" title="Đóng">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                <div class="space-y-3">
+                    <button class="quick-reply w-full p-3 bg-gray-700/60 rounded-xl text-left hover:bg-gray-600/60 transition-colors">
+                        "Tôi đang bận, sẽ gọi lại sau"
+                    </button>
+                    <button class="quick-reply w-full p-3 bg-gray-700/60 rounded-xl text-left hover:bg-gray-600/60 transition-colors">
+                        "Đang trong cuộc họp"
+                    </button>
+                    <button class="quick-reply w-full p-3 bg-gray-700/60 rounded-xl text-left hover:bg-gray-600/60 transition-colors">
+                        "Gọi cho tôi trong 10 phút"
+                    </button>
+                    <button class="quick-reply w-full p-3 bg-gray-700/60 rounded-xl text-left hover:bg-gray-600/60 transition-colors">
+                        "Nhắn tin cho tôi nhé"
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ringtone audio -->
+        <audio id="ringtone" loop>
+            <source src="/public/audio/ringtone.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+
+    <script src="/public/js/calls/call-audio.js"></script>
+    <script src="/public/js/calls/incoming-call.js"></script>
+</body>
+</html>

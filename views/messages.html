@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tin nhắn - Crown</title>
+    <!-- Tailwind CSS from CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- External CSS file -->
+    <link rel="stylesheet" href="public/css/messages.css">
+    <link rel="stylesheet" href="public/css/navigation.css">
+    <!-- Leaflet CSS for OpenStreetMap -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin=""/>
+    
+    <!-- Avatar Utils -->
+    <script src="/public/js/avatar-utils.js"></script>
+    <!-- Encryption Service -->
+    <script src="/public/js/encryption.js"></script>
+    <!-- Call Services -->
+    <script src="/public/js/calls/outgoing-call.js"></script>
+    <script src="/public/js/calls/incoming-call.js"></script>
+    <script src="/public/js/calls/active-call.js"></script>
+</head>
+<body class="min-h-screen overflow-hidden">
+
+    <div class="flex h-screen">
+        <!-- Navigation Column -->
+        <div class="navigation-container">
+            <div id="main-navigation-placeholder"></div>
+        </div>
+
+        <!-- Main Content with mobile toggle -->
+        <div id="main-content">
+            <!-- Mobile conversations toggle button -->
+            <button class="mobile-conversations-toggle" onclick="toggleConversationsSidebar()" style="display: none;">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+            <!-- Conversations List -->
+            <div class="conversations-sidebar flex flex-col">
+                <div class="conversations-header p-4">
+                    <h1 class="text-2xl font-bold text-primary">Tin nhắn</h1>
+                    <input type="text" placeholder="Tìm kiếm tin nhắn" class="search-input w-full mt-4">
+                </div>
+                <div class="flex-1 overflow-y-auto">
+                    <a href="#" class="conversation-item active flex items-center p-4">
+                        <img data-user-avatar='{"firstName":"An","lastName":"Nguyễn","email":"an.nguyen@example.com"}' 
+                             data-avatar-size="48"
+                             alt="Avatar" 
+                             class="w-12 h-12 rounded-full">
+                        <div class="ml-4 flex-1 overflow-hidden">
+                            <p class="font-bold text-primary">An Nguyễn</p>
+                            <p class="text-sm truncate text-tertiary">Tuyệt vời! Hẹn gặp bạn sau nhé.</p>
+                        </div>
+                        <div class="text-right text-xs text-muted">
+                            <p>5 phút</p>
+                            <span class="message-badge mt-1">2</span>
+                        </div>
+                    </a>
+                    <a href="#" class="conversation-item flex items-center p-4">
+                        <img data-user-avatar='{"firstName":"Bình","lastName":"Trần","email":"binh.tran@example.com"}' 
+                             data-avatar-size="48"
+                             alt="Avatar" 
+                             class="w-12 h-12 rounded-full">
+                        <div class="ml-4 flex-1 overflow-hidden">
+                            <p class="font-bold text-primary">Bình Trần</p>
+                            <p class="text-sm truncate text-tertiary">Bạn: Đã gửi một tệp đính kèm.</p>
+                        </div>
+                        <p class="text-xs text-muted">1 giờ</p>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Chat Window -->
+            <div id="chat-container" class="flex flex-col relative">
+                <!-- Header -->
+                <div class="chat-header flex items-center justify-between">
+                    <div class="flex items-center">
+                        <img data-user-avatar='{"firstName":"An","lastName":"Nguyễn","email":"an.nguyen@example.com"}' 
+                             data-avatar-size="40"
+                             alt="Avatar" 
+                             class="w-10 h-10 rounded-full">
+                        <div class="ml-3">
+                            <p class="font-bold text-primary">An Nguyễn</p>
+                            <p class="user-status">Đang hoạt động</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button class="input-button" onclick="startVoiceCall()" title="Gọi điện">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                            </svg>
+                        </button>
+                        <button class="input-button" onclick="startVideoCall()" title="Gọi video">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                            </svg>
+                        </button>
+                        <button class="input-button" title="Thêm tùy chọn">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Message Area -->
+                <div id="message-area" class="flex-1 overflow-y-auto">
+                    <div class="space-y-4 min-h-full flex flex-col justify-end">
+                        <!-- Sample Messages -->
+                        <div class="flex justify-end">
+                            <div class="chat-bubble chat-bubble-me">
+                                <p>Chào bạn! Cuối tuần này có rảnh không?</p>
+                                <div class="message-time text-right">14:30</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-start">
+                            <div class="chat-bubble chat-bubble-them">
+                                <p>Chào! Mình rảnh đó, có gì vui không?</p>
+                                <div class="message-time">14:32</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-end">
+                            <div class="chat-bubble chat-bubble-me">
+                                <p>Đi xem phim nhé! Phim mới hay lắm.</p>
+                                <div class="message-time text-right">14:35</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-start">
+                            <div class="chat-bubble chat-bubble-them">
+                                <p>Tuyệt vời! Hẹn gặp bạn sau nhé. 😊</p>
+                                <div class="message-time">14:36</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Encryption Message -->
+                <div class="encryption-notice">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                    </svg> 
+                    <span>Tin nhắn được mã hóa đầu cuối.</span>
+                </div>
+
+                <!-- Input Area -->
+                <div class="input-container">
+                    <div class="input-wrapper">
+                        <button class="input-button" title="Thêm tệp">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </button>
+                                                <input type="text" 
+                               id="message-input" 
+                               placeholder="Nhập tin nhắn..." 
+                               class="message-input"
+                               onkeypress="handleKeyPress(event)">
+                        <button class="input-button" title="Đính kèm">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path>
+                            </svg>
+                        </button>
+                        <button class="input-button" title="Ghi âm">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+                            </svg>
+                        </button>
+                        <button class="input-button send-button" title="Gửi">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M2.003 21.003c.043.48.49.836.97.836l18.054-9.027a.75.75 0 000-1.318L2.973 2.164a.75.75 0 00-.97.836L4.473 12 2.003 21.003z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Drag and Drop Overlay -->
+                <div id="drag-drop-overlay" class="drag-drop-overlay absolute inset-0 hidden items-center justify-center z-20 m-2">
+                    <div class="text-center text-primary">
+                        <svg class="w-24 h-24 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                        </svg>
+                        <p class="text-2xl font-bold mt-4">Kéo và thả tệp để gửi</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Navigation Placeholder -->
+    <div id="mobile-navigation-placeholder"></div>
+
+    <!-- External JavaScript file -->
+    <script src="public/js/messages.js"></script>
+    <script src="/public/js/navigation.js"></script>
+    
+    <script>
+        // Khởi tạo navigation và avatar khi DOM loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cập nhật tất cả avatar trong trang
+            ClientAvatarUtils.updateAllAvatars();
+            
+            // Khởi tạo theme từ localStorage hoặc system preference
+            initializeTheme();
+        });
+        
+        // Theme Management - Enhanced
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('crown-theme');
+            const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            const currentTheme = savedTheme || systemTheme;
+            
+            console.log('Initializing theme:', currentTheme);
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            
+            // Apply theme to body as well for better compatibility
+            document.body.className = document.body.className.replace(/theme-\w+/g, '') + ' theme-' + currentTheme;
+        }
+        
+        // Listen for theme changes from navigation
+        window.addEventListener('themeChanged', function(e) {
+            console.log('Theme changed to:', e.detail.theme);
+            document.documentElement.setAttribute('data-theme', e.detail.theme);
+            document.body.className = document.body.className.replace(/theme-\w+/g, '') + ' theme-' + e.detail.theme;
+            localStorage.setItem('crown-theme', e.detail.theme);
+        });
+        
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+            if (!localStorage.getItem('crown-theme')) {
+                const newTheme = e.matches ? 'dark' : 'light';
+                document.documentElement.setAttribute('data-theme', newTheme);
+                document.body.className = document.body.className.replace(/theme-\w+/g, '') + ' theme-' + newTheme;
+            }
+        });
+        
+        // Modern message interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize encryption service
+            initializeEncryption();
+            
+            // Test buttons functionality
+            setTimeout(testButtons, 1000);
+            
+            // Auto-scroll to bottom of messages
+            const messageArea = document.getElementById('message-area');
+            if (messageArea) {
+                messageArea.scrollTop = messageArea.scrollHeight;
+            }
+            
+            // Handle message input
+            const messageInput = document.querySelector('.message-input');
+            const sendButton = document.querySelector('.send-button');
+            
+            if (messageInput && sendButton) {
+                messageInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        sendMessage();
+                    }
+                });
+                
+                sendButton.addEventListener('click', sendMessage);
+            }
+            
+            // Add event listeners for call buttons as backup
+            const voiceButton = document.querySelector('button[onclick="startVoiceCall()"]');
+            const videoButton = document.querySelector('button[onclick="startVideoCall()"]');
+            
+            if (voiceButton) {
+                voiceButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('🎤 Voice button clicked via event listener');
+                    startVoiceCall();
+                });
+            }
+            
+            if (videoButton) {
+                videoButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('📹 Video button clicked via event listener');
+                    startVideoCall();
+                });
+            }
+            
+            // Drag and drop functionality
+            const dragDropOverlay = document.getElementById('drag-drop-overlay');
+            const chatContainer = document.getElementById('chat-container');
+            
+            if (dragDropOverlay && chatContainer) {
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                    chatContainer.addEventListener(eventName, preventDefaults, false);
+                });
+                
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    chatContainer.addEventListener(eventName, highlight, false);
+                });
+                
+                ['dragleave', 'drop'].forEach(eventName => {
+                    chatContainer.addEventListener(eventName, unhighlight, false);
+                });
+                
+                chatContainer.addEventListener('drop', handleDrop, false);
+            }
+        });
+        
+        function sendMessage() {
+            const messageInput = document.querySelector('.message-input');
+            if (messageInput && messageInput.value.trim()) {
+                // Add message sending logic here with encryption
+                sendEncryptedMessage(messageInput.value.trim());
+                messageInput.value = '';
+            }
+        }
+        
+        // Enhanced send message with encryption
+        async function sendEncryptedMessage(messageText) {
+            try {
+                let encryptedMessage = messageText;
+                
+                // Encrypt message if service is available
+                if (window.encryptionService) {
+                    const recipientId = 'recipient-user-id'; // Get from current conversation
+                    
+                    encryptedMessage = await window.encryptionService.encryptMessage(
+                        messageText, 
+                        recipientId
+                    );
+                    console.log('🔐 Message encrypted');
+                }
+                
+                // Send encrypted message to server
+                const response = await fetch('/api/messages/send', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: encryptedMessage,
+                        recipientId: 'recipient-user-id',
+                        isEncrypted: !!window.encryptionService
+                    })
+                });
+                
+                if (response.ok) {
+                    // Add message to UI
+                    addMessageToUI(messageText, 'sent');
+                    console.log('✅ Message sent successfully');
+                } else {
+                    throw new Error('Failed to send message');
+                }
+                
+            } catch (error) {
+                console.error('❌ Error sending message:', error);
+                alert('Không thể gửi tin nhắn. Vui lòng thử lại.');
+            }
+        }
+        
+        // Add message to UI
+        function addMessageToUI(message, type) {
+            const messageArea = document.getElementById('message-area');
+            const messageDiv = document.createElement('div');
+            
+            const now = new Date();
+            const timeString = now.getHours().toString().padStart(2, '0') + ':' + 
+                             now.getMinutes().toString().padStart(2, '0');
+            
+            if (type === 'sent') {
+                messageDiv.innerHTML = `
+                    <div class="flex justify-end">
+                        <div class="chat-bubble chat-bubble-me">
+                            <p>${message}</p>
+                            <div class="message-time text-right">${timeString}</div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="flex justify-start">
+                        <div class="chat-bubble chat-bubble-them">
+                            <p>${message}</p>
+                            <div class="message-time">${timeString}</div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            messageArea.appendChild(messageDiv);
+            messageArea.scrollTop = messageArea.scrollHeight;
+        }
+        
+        // Voice call function
+        async function startVoiceCall() {
+            try {
+                console.log('🎤 Voice call button clicked');
+                
+                const recipientId = 'recipient-user-id'; // Get from current conversation
+                const recipientName = document.querySelector('.chat-user-details .chat-user-name') ? 
+                                    document.querySelector('.chat-user-details .chat-user-name').textContent :
+                                    document.querySelector('[class*="font-bold"]').textContent || 'An Nguyễn';
+                
+                console.log('📞 Recipient:', recipientName);
+                
+                // Open outgoing call window with correct path
+                const callUrl = `/outgoing-call?recipientId=${recipientId}&recipientName=${encodeURIComponent(recipientName)}&type=voice`;
+                console.log('🔗 Opening URL:', callUrl);
+                
+                const callWindow = window.open(
+                    callUrl,
+                    'voiceCall',
+                    'width=400,height=600,resizable=no,scrollbars=no,location=no,menubar=no,toolbar=no'
+                );
+                
+                if (callWindow) {
+                    console.log('✅ Voice call window opened successfully');
+                } else {
+                    console.error('❌ Failed to open call window');
+                    alert('Không thể mở cửa sổ cuộc gọi. Vui lòng kiểm tra popup blocker.');
+                }
+                
+            } catch (error) {
+                console.error('❌ Error starting voice call:', error);
+                alert('Không thể bắt đầu cuộc gọi. Vui lòng thử lại.');
+            }
+        }
+        
+        // Video call function
+        async function startVideoCall() {
+            try {
+                console.log('📹 Video call button clicked');
+                
+                const recipientId = 'recipient-user-id'; // Get from current conversation
+                const recipientName = document.querySelector('.chat-user-details .chat-user-name') ? 
+                                    document.querySelector('.chat-user-details .chat-user-name').textContent :
+                                    document.querySelector('[class*="font-bold"]').textContent || 'An Nguyễn';
+                
+                console.log('📞 Recipient:', recipientName);
+                
+                // Open outgoing call window with correct path
+                const callUrl = `/outgoing-call?recipientId=${recipientId}&recipientName=${encodeURIComponent(recipientName)}&type=video`;
+                console.log('🔗 Opening URL:', callUrl);
+                
+                const callWindow = window.open(
+                    callUrl,
+                    'videoCall',
+                    'width=800,height=600,resizable=no,scrollbars=no,location=no,menubar=no,toolbar=no'
+                );
+                
+                if (callWindow) {
+                    console.log('✅ Video call window opened successfully');
+                } else {
+                    console.error('❌ Failed to open call window');
+                    alert('Không thể mở cửa sổ cuộc gọi. Vui lòng kiểm tra popup blocker.');
+                }
+                
+            } catch (error) {
+                console.error('❌ Error starting video call:', error);
+                alert('Không thể bắt đầu cuộc gọi video. Vui lòng thử lại.');
+            }
+        }
+        
+        // Initialize encryption service
+        function initializeEncryption() {
+            try {
+                if (typeof ClientEncryptionService !== 'undefined') {
+                    window.encryptionService = new ClientEncryptionService();
+                    window.encryptionService.initializeUserEncryption().then(() => {
+                        console.log('✅ Encryption service initialized');
+                        updateEncryptionStatus(true);
+                    }).catch(error => {
+                        console.error('❌ Failed to initialize encryption:', error);
+                        updateEncryptionStatus(false);
+                    });
+                } else {
+                    console.warn('⚠️ Encryption service not available');
+                    updateEncryptionStatus(false);
+                }
+            } catch (error) {
+                console.error('❌ Error initializing encryption:', error);
+                updateEncryptionStatus(false);
+            }
+        }
+        
+        // Update encryption status indicator
+        function updateEncryptionStatus(isEncrypted) {
+            const notice = document.querySelector('.encryption-notice span');
+            
+            if (notice) {
+                if (isEncrypted) {
+                    notice.textContent = 'Tin nhắn được mã hóa end-to-end';
+                    notice.style.color = '#22c55e'; // Green for encrypted
+                } else {
+                    notice.textContent = 'Chưa thể mã hóa tin nhắn';
+                    notice.style.color = '#ef4444'; // Red for not encrypted
+                }
+            }
+        }
+        
+        // Toggle conversations sidebar on mobile
+        function toggleConversationsSidebar() {
+            const sidebar = document.querySelector('.conversations-sidebar');
+            sidebar.classList.toggle('mobile-open');
+            
+            // Close sidebar when clicking outside
+            if (sidebar.classList.contains('mobile-open')) {
+                setTimeout(() => {
+                    document.addEventListener('click', closeSidebarOnClickOutside);
+                }, 100);
+            } else {
+                document.removeEventListener('click', closeSidebarOnClickOutside);
+            }
+        }
+        
+        function closeSidebarOnClickOutside(event) {
+            const sidebar = document.querySelector('.conversations-sidebar');
+            const toggleBtn = document.querySelector('.mobile-conversations-toggle');
+            
+            if (!sidebar.contains(event.target) && !toggleBtn.contains(event.target)) {
+                sidebar.classList.remove('mobile-open');
+                document.removeEventListener('click', closeSidebarOnClickOutside);
+            }
+        }
+        
+        // Handle enter key press
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+        
+        // Test function for debugging
+        function testButtons() {
+            console.log('🧪 Testing buttons...');
+            const voiceBtn = document.querySelector('button[onclick="startVoiceCall()"]');
+            const videoBtn = document.querySelector('button[onclick="startVideoCall()"]');
+            
+            console.log('Voice button found:', !!voiceBtn);
+            console.log('Video button found:', !!videoBtn);
+            
+            if (voiceBtn) {
+                console.log('Voice button attributes:', voiceBtn.outerHTML);
+            }
+            if (videoBtn) {
+                console.log('Video button attributes:', videoBtn.outerHTML);
+            }
+        }
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        function highlight(e) {
+            document.getElementById('drag-drop-overlay').classList.remove('hidden');
+            document.getElementById('drag-drop-overlay').classList.add('flex');
+        }
+        
+        function unhighlight(e) {
+            document.getElementById('drag-drop-overlay').classList.add('hidden');
+            document.getElementById('drag-drop-overlay').classList.remove('flex');
+        }
+        
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            
+            handleFiles(files);
+        }
+        
+        function handleFiles(files) {
+            // Add file handling logic here
+            console.log('Handling files:', files);
+        }
+    </script>
+</body>
+</html>

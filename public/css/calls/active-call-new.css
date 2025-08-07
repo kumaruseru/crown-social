@@ -1,0 +1,195 @@
+/*
+ * Active Call Styles - New Version
+ * CSS cho trang cuộc gọi đang diễn ra
+ */
+
+body {
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+}
+
+/* Hiệu ứng nền mờ */
+.background-blur {
+    background-image: url('https://placehold.co/600x800/f87171/ffffff?text=Avatar');
+    filter: blur(20px) brightness(0.7);
+    transform: scale(1.1);
+}
+
+/* Fix camera mirror effect - flip local video horizontally */
+#local-video {
+    transform: scaleX(-1);
+}
+
+/* Call timer styling */
+#call-timer, #video-call-timer {
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.05em;
+}
+
+/* Mute indicator */
+#mute-indicator {
+    animation: pulse-fade 2s infinite;
+}
+
+@keyframes pulse-fade {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+/* Button hover effects */
+button {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+button:hover {
+    transform: scale(1.05);
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+/* Video controls styling */
+#video-call-screen .absolute {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* Local video container */
+#local-video-container {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+#local-video-container:hover {
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+}
+
+/* Call controls container */
+.call-controls {
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Button states */
+.btn-muted {
+    background: linear-gradient(45deg, #ef4444, #dc2626);
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+}
+
+.btn-active {
+    background: linear-gradient(45deg, #3b82f6, #2563eb);
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    /* Mobile optimizations */
+    .call-controls {
+        padding: 1rem;
+    }
+    
+    .call-controls .flex {
+        gap: 1rem;
+    }
+    
+    button {
+        min-width: 3rem;
+        min-height: 3rem;
+    }
+    
+    #call-timer, #video-call-timer {
+        font-size: 1.125rem;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Very small screens */
+    .call-controls .flex {
+        gap: 0.75rem;
+    }
+    
+    button {
+        min-width: 2.5rem;
+        min-height: 2.5rem;
+    }
+    
+    button svg {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+    
+    #local-video-container {
+        width: 4rem;
+        height: 5rem;
+        top: 0.75rem;
+        right: 0.75rem;
+    }
+}
+
+/* Animation classes */
+.fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.fade-out {
+    animation: fadeOut 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+}
+
+/* Focus styles for accessibility */
+button:focus {
+    outline: 2px solid rgba(59, 130, 246, 0.5);
+    outline-offset: 2px;
+}
+
+/* Loading states */
+.loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: inherit;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}

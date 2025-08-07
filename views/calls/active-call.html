@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuộc gọi đang diễn ra</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="/public/css/calls/active-call-new.css">
+</head>
+<body class="bg-gray-900">
+
+    <!-- Container chính của cuộc gọi voice -->
+    <div id="voice-call-screen" class="relative w-full h-screen flex flex-col justify-center items-center text-white overflow-hidden">
+        
+        <!-- Nền mờ -->
+        <div class="background-blur absolute inset-0 w-full h-full bg-cover bg-center z-0"></div>
+        
+        <!-- Lớp phủ tối -->
+        <div class="absolute inset-0 bg-black/50 z-10"></div>
+
+        <!-- Nội dung cuộc gọi -->
+        <div class="relative z-20 flex flex-col items-center justify-center h-full py-16 w-full">
+            
+            <!-- Thông tin người trong cuộc gọi (phần giữa) -->
+            <div class="text-center">
+                <div class="relative inline-block">
+                    <img id="contact-avatar" src="https://placehold.co/128x128/f87171/ffffff?text=H" alt="Avatar người trong cuộc gọi" class="w-32 h-32 rounded-full border-4 border-white/50 object-cover">
+                </div>
+                <h1 id="contact-name" class="text-4xl font-bold mt-6">Bò Húc</h1>
+                <p id="call-status" class="text-lg text-green-400 mt-2">Đã kết nối</p>
+                <div class="mt-3">
+                    <p id="call-timer" class="text-2xl font-mono text-white bg-black/30 px-4 py-2 rounded-full inline-block">00:00</p>
+                </div>
+                
+                <!-- Mute indicator -->
+                <div id="mute-indicator" class="hidden mt-3 inline-flex items-center px-3 py-1 bg-red-500/80 rounded-full">
+                    <i data-lucide="mic-off" class="w-4 h-4 text-white mr-2"></i>
+                    <span class="text-white text-sm font-medium">Đã tắt tiếng</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Các nút điều khiển cuộc gọi ở vị trí cố định dưới -->
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-30">
+            <div class="flex justify-center items-center space-x-6 bg-black/50 backdrop-blur-sm rounded-full px-6 py-4">
+                <!-- Nút Tắt tiếng -->
+                <button id="mute-btn" class="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center transform hover:scale-110 transition-all duration-300" title="Tắt/Bật tiếng">
+                    <i data-lucide="mic" class="w-6 h-6 text-white"></i>
+                </button>
+                
+                <!-- Nút Kết thúc cuộc gọi -->
+                <button id="end-call" class="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center transform hover:scale-110 transition-transform duration-300" title="Kết thúc cuộc gọi">
+                    <i data-lucide="phone-off" class="w-8 h-8 text-white"></i>
+                </button>
+
+                <!-- Nút Camera (chuyển sang video call) -->
+                <button id="camera-btn" class="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center transform hover:scale-110 transition-all duration-300" title="Bật camera">
+                    <i data-lucide="video-off" class="w-6 h-6 text-white"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Container video call -->
+    <div id="video-call-screen" class="relative w-full h-screen bg-black text-white overflow-hidden hidden">
+        
+        <!-- Remote video (toàn màn hình) -->
+        <video id="remote-video" class="absolute inset-0 w-full h-full object-cover" autoplay playsinline></video>
+        
+        <!-- Local video (picture-in-picture) -->
+        <div class="absolute top-4 right-4 w-32 h-40 bg-gray-800 rounded-lg overflow-hidden border-2 border-white/20">
+            <video id="local-video" class="w-full h-full object-cover" autoplay muted playsinline></video>
+        </div>
+
+        <!-- Call info overlay -->
+        <div class="absolute top-4 left-4 bg-black/50 backdrop-blur-sm rounded-lg px-4 py-2">
+            <p id="video-contact-name" class="text-lg font-semibold">Bò Húc</p>
+            <p id="video-call-timer" class="text-xl font-mono text-green-400 bg-black/40 px-2 py-1 rounded">00:00</p>
+        </div>
+
+        <!-- Video call controls -->
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2">
+            <div class="flex justify-center items-center space-x-6 bg-black/50 backdrop-blur-sm rounded-full px-6 py-4">
+                <!-- Nút Tắt tiếng video -->
+                <button id="video-mute-btn" class="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center transform hover:scale-110 transition-all duration-300" title="Tắt/Bật tiếng">
+                    <i data-lucide="mic" class="w-6 h-6 text-white"></i>
+                </button>
+                
+                <!-- Nút Kết thúc video call -->
+                <button id="video-end-call" class="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center transform hover:scale-110 transition-transform duration-300" title="Kết thúc cuộc gọi">
+                    <i data-lucide="phone-off" class="w-8 h-8 text-white"></i>
+                </button>
+
+                <!-- Nút Tắt camera (chuyển về voice) -->
+                <button id="video-camera-btn" class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center transform hover:scale-110 transition-all duration-300" title="Tắt camera">
+                    <i data-lucide="video" class="w-6 h-6 text-white"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/public/js/calls/call-audio.js"></script>
+    <script src="/public/js/calls/active-call-new.js"></script>
+    <script>
+        // Fallback initialization và debugging
+        window.addEventListener('load', function() {
+            console.log('🔄 Window loaded - checking elements...');
+            
+            // Check if elements exist
+            const endCallBtn = document.getElementById('end-call');
+            const muteBtn = document.getElementById('mute-btn');
+            const cameraBtn = document.getElementById('camera-btn');
+            
+            console.log('Elements check:', {
+                endCallBtn: !!endCallBtn,
+                muteBtn: !!muteBtn, 
+                cameraBtn: !!cameraBtn
+            });
+            
+            // Add direct event listeners as fallback
+            if (endCallBtn) {
+                endCallBtn.addEventListener('click', function(e) {
+                    console.log('🔴 Direct end call button clicked');
+                    e.preventDefault();
+                    
+                    if (window.activeCallManager) {
+                        window.activeCallManager.endCall();
+                    } else {
+                        console.log('No ActiveCallManager, using fallback');
+                        if (confirm('Kết thúc cuộc gọi?')) {
+                            window.location.href = '/messages';
+                        }
+                    }
+                });
+                console.log('✅ End call listener added');
+            }
+            
+            if (muteBtn) {
+                muteBtn.addEventListener('click', function(e) {
+                    console.log('🎤 Direct mute button clicked');
+                    e.preventDefault();
+                    
+                    if (window.activeCallManager) {
+                        window.activeCallManager.toggleMute();
+                    } else {
+                        // Simple UI toggle
+                        const icon = muteBtn.querySelector('i');
+                        if (icon) {
+                            const isMuted = icon.getAttribute('data-lucide') === 'mic-off';
+                            if (isMuted) {
+                                icon.setAttribute('data-lucide', 'mic');
+                                muteBtn.classList.remove('bg-red-500');
+                                muteBtn.classList.add('bg-gray-700');
+                                console.log('Unmuted');
+                            } else {
+                                icon.setAttribute('data-lucide', 'mic-off');
+                                muteBtn.classList.add('bg-red-500');
+                                muteBtn.classList.remove('bg-gray-700');
+                                console.log('Muted');
+                            }
+                            if (typeof lucide !== 'undefined') {
+                                lucide.createIcons();
+                            }
+                        }
+                    }
+                });
+                console.log('✅ Mute listener added');
+            }
+            
+            if (cameraBtn) {
+                cameraBtn.addEventListener('click', function(e) {
+                    console.log('📹 Direct camera button clicked');
+                    e.preventDefault();
+                    
+                    if (window.activeCallManager) {
+                        window.activeCallManager.switchToVideoCall();
+                    } else {
+                        // Simple screen toggle
+                        const voiceScreen = document.getElementById('voice-call-screen');
+                        const videoScreen = document.getElementById('video-call-screen');
+                        
+                        if (voiceScreen && videoScreen) {
+                            voiceScreen.classList.add('hidden');
+                            videoScreen.classList.remove('hidden');
+                            console.log('Switched to video view');
+                        }
+                    }
+                });
+                console.log('✅ Camera listener added');
+            }
+            
+            // Initialize lucide icons
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+                console.log('✅ Lucide icons initialized');
+            }
+            
+            // Add listeners for video call buttons too
+            const videoEndCallBtn = document.getElementById('video-end-call');
+            const videoMuteBtn = document.getElementById('video-mute-btn');
+            const videoCameraBtn = document.getElementById('video-camera-btn');
+            
+            if (videoEndCallBtn) {
+                videoEndCallBtn.addEventListener('click', function(e) {
+                    console.log('🔴 Video end call clicked');
+                    e.preventDefault();
+                    if (window.activeCallManager) {
+                        window.activeCallManager.endCall();
+                    } else {
+                        if (confirm('Kết thúc cuộc gọi?')) {
+                            window.location.href = '/messages';
+                        }
+                    }
+                });
+                console.log('✅ Video end call listener added');
+            }
+            
+            if (videoMuteBtn) {
+                videoMuteBtn.addEventListener('click', function(e) {
+                    console.log('🎤 Video mute clicked');
+                    e.preventDefault();
+                    if (window.activeCallManager) {
+                        window.activeCallManager.toggleMute();
+                    } else {
+                        // Sync with voice mute button
+                        const icon = videoMuteBtn.querySelector('i');
+                        const voiceIcon = muteBtn?.querySelector('i');
+                        if (icon) {
+                            const isMuted = icon.getAttribute('data-lucide') === 'mic-off';
+                            const newIcon = isMuted ? 'mic' : 'mic-off';
+                            const newClass = isMuted ? 'bg-gray-700' : 'bg-red-500';
+                            const removeClass = isMuted ? 'bg-red-500' : 'bg-gray-700';
+                            
+                            icon.setAttribute('data-lucide', newIcon);
+                            videoMuteBtn.classList.add(newClass);
+                            videoMuteBtn.classList.remove(removeClass);
+                            
+                            // Sync voice button
+                            if (voiceIcon && muteBtn) {
+                                voiceIcon.setAttribute('data-lucide', newIcon);
+                                muteBtn.classList.add(newClass);
+                                muteBtn.classList.remove(removeClass);
+                            }
+                            
+                            if (typeof lucide !== 'undefined') {
+                                lucide.createIcons();
+                            }
+                        }
+                    }
+                });
+                console.log('✅ Video mute listener added');
+            }
+            
+            if (videoCameraBtn) {
+                videoCameraBtn.addEventListener('click', function(e) {
+                    console.log('📹 Video camera off clicked');
+                    e.preventDefault();
+                    if (window.activeCallManager) {
+                        window.activeCallManager.switchToVoiceCall();
+                    } else {
+                        // Switch back to voice call
+                        const voiceScreen = document.getElementById('voice-call-screen');
+                        const videoScreen = document.getElementById('video-call-screen');
+                        
+                        if (voiceScreen && videoScreen) {
+                            videoScreen.classList.add('hidden');
+                            voiceScreen.classList.remove('hidden');
+                            console.log('Switched to voice view');
+                        }
+                    }
+                });
+                console.log('✅ Video camera listener added');
+            }
+        });
+    </script>
+</body>
+</html>

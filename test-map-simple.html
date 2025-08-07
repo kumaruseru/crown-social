@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Map Simple</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
+          crossorigin=""/>
+    
+    <style>
+        #mapid {
+            height: 400px;
+            width: 100%;
+            border: 2px solid red;
+        }
+        body {
+            margin: 20px;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Leaflet Map</h1>
+    <div id="mapid"></div>
+    <p>Console log:</p>
+    <div id="log"></div>
+    
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+    
+    <script>
+        function log(msg) {
+            console.log(msg);
+            document.getElementById('log').innerHTML += '<p>' + msg + '</p>';
+        }
+        
+        log('1. Starting test...');
+        log('2. Leaflet available: ' + (typeof L !== 'undefined'));
+        
+        try {
+            log('3. Creating map...');
+            var mymap = L.map('mapid').setView([10.7769, 106.7009], 13);
+            log('4. Map created successfully');
+            
+            log('5. Adding tile layer...');
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(mymap);
+            log('6. Tile layer added');
+            
+            log('7. Adding test marker...');
+            L.marker([10.7769, 106.7009]).addTo(mymap)
+                .bindPopup('Test marker in Ho Chi Minh City')
+                .openPopup();
+            log('8. Test completed successfully!');
+            
+        } catch (error) {
+            log('ERROR: ' + error.message);
+            console.error(error);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,295 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
+}
+
+/* Hide scrollbar for webkit browsers (Chrome, Safari, Edge) */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+*::-webkit-scrollbar {
+    display: none;
+    width: 0px;
+    background: transparent;
+}
+
+/* Additional scrollbar hiding for all elements */
+* {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+*::-webkit-scrollbar {
+    display: none;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #1a202c;
+}
+
+/* Custom Dropdown Styles */
+.custom-select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fbbf24' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 40px !important;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    position: relative;
+    overflow: hidden;
+}
+
+.custom-select::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(251, 191, 36, 0.1), transparent);
+    transition: left 0.5s;
+}
+
+.custom-select:hover::before {
+    left: 100%;
+}
+
+.custom-select:hover {
+    border-color: #fbbf24;
+    background-color: rgba(55, 65, 81, 0.6);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(251, 191, 36, 0.15), 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.custom-select:focus {
+    border-color: #fbbf24;
+    box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.15), 0 8px 25px rgba(251, 191, 36, 0.1);
+    background-color: rgba(55, 65, 81, 0.7);
+    outline: none;
+    transform: translateY(-1px);
+}
+
+.custom-select option {
+    background-color: #374151;
+    color: #fff;
+    padding: 12px 16px;
+    border: none;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.custom-select option:hover {
+    background-color: #4b5563;
+    color: #fbbf24;
+}
+
+.custom-select option:checked {
+    background-color: #fbbf24;
+    color: #1a202c;
+    font-weight: 600;
+}
+
+/* Date Selection Grid Enhancement */
+.date-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: 16px;
+    align-items: end;
+}
+
+.date-grid .custom-select {
+    min-height: 52px;
+    display: flex;
+    align-items: center;
+    border-radius: 12px;
+}
+
+/* Floating Labels Enhancement */
+.floating-label-group {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.floating-label-group input:focus + label,
+.floating-label-group input:not(:placeholder-shown) + label {
+    transform: translateY(-28px) scale(0.85);
+    color: #fbbf24;
+    font-weight: 500;
+}
+
+.floating-label-group label {
+    position: absolute;
+    top: 12px;
+    left: 16px;
+    background: transparent;
+    padding: 0 4px;
+    color: #9ca3af;
+    font-size: 14px;
+    font-weight: 400;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Form Input Enhancements */
+.form-input {
+    background: rgba(55, 65, 81, 0.5);
+    border: 2px solid #4b5563;
+    border-radius: 12px;
+    padding: 12px 16px;
+    color: #fff;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.form-input::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(251, 191, 36, 0.05), transparent);
+    transition: left 0.5s;
+}
+
+.form-input:hover::before {
+    left: 100%;
+}
+
+.form-input:focus {
+    border-color: #fbbf24;
+    background: rgba(55, 65, 81, 0.7);
+    box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.1);
+    outline: none;
+    transform: translateY(-1px);
+}
+
+.form-input:hover {
+    border-color: #6b7280;
+    background: rgba(55, 65, 81, 0.6);
+    transform: translateY(-1px);
+}
+
+/* Dropdown Animation on Selection */
+@keyframes selectBounce {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+}
+
+.custom-select.selected {
+    animation: selectBounce 0.3s ease;
+    border-color: #10b981;
+    background-color: rgba(16, 185, 129, 0.1);
+}
+
+/* Label Animation Enhancement */
+.form-label {
+    color: #9ca3af;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    display: block;
+    transition: color 0.3s ease;
+}
+
+.form-group:focus-within .form-label {
+    color: #fbbf24;
+}
+
+/* Gender Select Special Styling */
+select[name="gender"] option {
+    font-size: 16px;
+    padding: 14px 16px;
+}
+
+select[name="gender"]:hover {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2310b981' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+}
+
+#particle-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.auth-container {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 1rem;
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.register-card-container {
+    perspective: 1000px;
+    width: 100%;
+    max-width: 32rem; /* Increased width for more fields */
+}
+
+.register-card {
+    animation: fadeInUp 0.8s ease-out forwards;
+    transition: transform 0.1s ease-out;
+    transform-style: preserve-3d;
+    width: 100%;
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+}
+
+.register-card::-webkit-scrollbar { width: 4px; }
+.register-card::-webkit-scrollbar-track { background: rgba(45, 55, 72, 0.3); }
+.register-card::-webkit-scrollbar-thumb { background: rgba(251, 191, 36, 0.5); border-radius: 2px; }
+
+.focus\:ring-yellow-400:focus { --tw-ring-color: #FBBF24; }
+
+.floating-label-group { position: relative; }
+.floating-label-group .floating-input { padding-top: 1.5rem; }
+.floating-label-group .floating-label {
+    position: absolute; top: 50%; left: 1rem; transform: translateY(-50%);
+    pointer-events: none; transition: all 0.2s ease-out; color: #a0aec0;
+}
+.floating-label-group .floating-input:focus + .floating-label,
+.floating-label-group .floating-input:not(:placeholder-shown) + .floating-label {
+    top: 0.75rem; transform: translateY(0); font-size: 0.75rem; color: #FBBF24;
+}
+
+/* Custom Select Styling */
+.custom-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5' /%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1.25em;
+    padding-right: 2.5rem; /* Make space for arrow */
+}
+.custom-select option {
+    background-color: #1f2937; /* gray-800 */
+    color: #e2e8f0; /* slate-200 */
+}

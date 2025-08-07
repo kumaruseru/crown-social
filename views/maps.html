@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bản đồ - Crown</title>
+    
+    <!-- External Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <!-- Your Custom Stylesheets -->
+    <link rel="stylesheet" href="/public/css/navigation.css">
+    <link rel="stylesheet" href="/public/css/maps.css">
+    
+    <!-- Avatar Utils -->
+    <script src="/public/js/avatar-utils.js"></script>
+</head>
+<body class="min-h-screen bg-slate-900 text-slate-200">
+
+    <div class="flex">
+        <!-- Main Navigation Placeholder -->
+        <div id="main-navigation-placeholder"></div>
+
+        <!-- Main Content -->
+        <main class="flex-1 ml-0 sm:ml-24 lg:ml-72 transition-all duration-300 relative h-screen">
+            <!-- Map Container -->
+            <div id="map" class="absolute inset-0"></div>
+
+            <!-- Top UI Overlay -->
+            <div class="absolute top-0 left-0 right-0 p-4 flex justify-between items-start z-10 pointer-events-none">
+                <!-- Search Box -->
+                <div class="glass-card p-2 rounded-full shadow-lg pointer-events-auto">
+                    <input type="text" 
+                           placeholder="Tìm kiếm địa điểm..." 
+                           class="w-64 sm:w-80 py-2 px-4 bg-transparent focus:outline-none text-slate-200 placeholder-slate-400">
+                </div>
+                
+                <!-- Filter Buttons -->
+                <div class="glass-card p-1 rounded-full shadow-lg flex space-x-1 pointer-events-auto">
+                    <button class="px-4 py-2 text-sm font-semibold bg-slate-800/80 rounded-full text-yellow-400">
+                        Bạn bè
+                    </button>
+                    <button class="px-4 py-2 text-sm text-slate-300 hover:bg-slate-800/50 rounded-full">
+                        Bài viết
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bottom UI Overlay -->
+            <div class="absolute bottom-0 left-0 right-0 p-4 z-10 pointer-events-none">
+                <div class="glass-card rounded-lg shadow-lg max-w-sm mx-auto p-4 pointer-events-auto">
+                    <!-- Header -->
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-bold text-white">Bạn bè gần đây</h3>
+                        <button class="text-xs text-yellow-400 hover:underline">Xem tất cả</button>
+                    </div>
+                    
+                    <!-- Friends List -->
+                    <div class="space-y-3">
+                        <!-- Friend 1 -->
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <img data-user-avatar='{"firstName":"An","lastName":"Nguyễn","email":"an.nguyen@example.com"}' 
+                                     data-avatar-size="40"
+                                     alt="Avatar An Nguyễn" 
+                                     class="w-10 h-10 rounded-full">
+                                <div class="ml-3">
+                                    <p class="font-semibold text-white">An Nguyễn</p>
+                                    <p class="text-sm text-slate-400">Cách bạn 5km</p>
+                                </div>
+                            </div>
+                            <button class="bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-bold py-1 px-3 rounded-full">
+                                Nhắn tin
+                            </button>
+                        </div>
+                        
+                        <!-- Friend 2 -->
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <img data-user-avatar='{"firstName":"Bình","lastName":"Trần","email":"binh.tran@example.com"}' 
+                                     data-avatar-size="40"
+                                     alt="Avatar Bình Trần" 
+                                     class="w-10 h-10 rounded-full">
+                                <div class="ml-3">
+                                    <p class="font-semibold text-white">Bình Trần</p>
+                                    <p class="text-sm text-slate-400">Cách bạn 12km</p>
+                                </div>
+                            </div>
+                            <button class="bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-bold py-1 px-3 rounded-full">
+                                Nhắn tin
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Privacy Notice -->
+                    <p class="text-xs text-slate-500 mt-4 text-center flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" 
+                                  stroke-linejoin="round" 
+                                  stroke-width="2" 
+                                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                            </path>
+                        </svg>
+                        Vị trí của bạn chỉ được chia sẻ với bạn bè.
+                    </p>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Mobile Navigation Placeholder -->
+    <div id="mobile-navigation-placeholder"></div>
+
+    <!-- JavaScript Libraries -->
+    <script src="/public/js/navigation.js"></script>
+    <script src="/public/js/maps.js"></script>
+    
+    <script>
+        // Khởi tạo avatar khi DOM loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cập nhật tất cả avatar trong trang
+            ClientAvatarUtils.updateAllAvatars();
+        });
+    </script>
+
+</body>
+</html>

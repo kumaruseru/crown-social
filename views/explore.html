@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khám phá - Crown</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/public/css/explore.css">
+    <link rel="stylesheet" href="/public/css/navigation.css">
+    <script>
+        // Theme detection and initialization
+        (function() {
+            const theme = localStorage.getItem('theme') || 
+                         (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+        })();
+    </script>
+</head>
+<body class="min-h-screen" data-theme>
+
+    <div class="flex">
+        <!-- Main Navigation Placeholder -->
+        <div id="main-navigation-placeholder"></div>
+        <!-- Main Content -->
+        <main class="flex-1 ml-0 sm:ml-24 lg:ml-72 mr-0 xl:mr-96 transition-all duration-300">
+            <div class="max-w-3xl mx-auto py-8 px-4">
+                
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-3xl font-bold text-white">Khám phá</h1>
+                    <button class="text-slate-400 hover:text-yellow-400 p-2 rounded-full">
+                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    </button>
+                </div>
+
+                <!-- Featured Trend -->
+                <div class="relative rounded-lg overflow-hidden mb-8 h-64">
+                    <img src="https://placehold.co/800x400/1E3A8A/BFDBFE?text=Sự+kiện+nổi+bật" class="w-full h-full object-cover" alt="Featured trend">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                    <div class="absolute bottom-0 left-0 p-6">
+                        <p class="text-sm text-slate-300">Xu hướng tại Việt Nam</p>
+                        <h2 class="text-3xl font-bold text-white mt-1">#SummerFest2025</h2>
+                        <p class="text-slate-300">125.8k bài viết</p>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <div class="border-b border-slate-700 mb-6">
+                    <nav class="-mb-px flex space-x-6" aria-label="Tabs">
+                        <a href="#for-you" class="tab-link whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm tab-active">Dành cho bạn</a>
+                        <a href="#trending" class="tab-link whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-500">Xu hướng</a>
+                        <a href="#news" class="tab-link whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-500">Tin tức</a>
+                        <a href="#sports" class="tab-link whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-500">Thể thao</a>
+                        <a href="#entertainment" class="tab-link whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-500">Giải trí</a>
+                    </nav>
+                </div>
+
+                <!-- Trends List -->
+                <div id="trends-container" class="space-y-2">
+                    <!-- Trends will be loaded dynamically -->
+                </div>
+
+            </div>
+        </main>
+
+        <!-- Right Sidebar -->
+        <aside class="w-80 fixed right-0 h-full p-6 hidden xl:block">
+             <div class="sticky top-6">
+                <div class="relative mb-6">
+                    <input type="text" placeholder="Tìm kiếm trên Crown" class="w-full py-2 pl-10 pr-4 bg-slate-800/80 border border-slate-700 rounded-full focus:outline-none focus:ring-2 focus:ring-yellow-400 text-slate-200">
+                    <svg class="w-5 h-5 text-slate-400 absolute top-1/2 left-3 transform -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </div>
+                <div class="glass-card rounded-lg p-4">
+                    <h3 class="font-bold text-lg mb-4 text-white">Gợi ý theo dõi</h3>
+                    <ul id="suggested-users">
+                        <!-- Suggested users will be loaded dynamically -->
+                    </ul>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- Mobile Navigation Placeholder -->
+        <div id="mobile-navigation-placeholder"></div>
+
+    </div>
+
+    <!-- Avatar Utilities -->
+    <script src="/public/js/avatar-utils.js"></script>
+    <!-- Navigation JavaScript -->
+    <script src="/public/js/navigation.js"></script>
+    <!-- Explore Page JavaScript -->
+    <script src="/public/js/explore.js"></script>
+</body>
+</html>

@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="system">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cài đặt - Crown</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/public/css/settings.css">
+    <link rel="stylesheet" href="/public/css/navigation.css">
+    <script>
+        // Theme detection and application
+        function initTheme() {
+            const savedTheme = localStorage.getItem('crown-theme') || 'system';
+            const html = document.documentElement;
+            
+            if (savedTheme === 'system') {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                html.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+            } else {
+                html.setAttribute('data-theme', savedTheme);
+            }
+        }
+        
+        // Apply theme immediately
+        initTheme();
+        
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            const savedTheme = localStorage.getItem('crown-theme');
+            if (savedTheme === 'system' || !savedTheme) {
+                document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+            }
+        });
+    </script>
+</head>
+<body class="min-h-screen">
+
+    <div class="flex">
+        <!-- Main Navigation Placeholder -->
+        <div id="main-navigation-placeholder"></div>
+        <!-- Main Content -->
+        <main class="flex-1 ml-0 sm:ml-24 lg:ml-72 transition-all duration-300">
+            <!-- Mobile Header -->
+            <header class="sticky top-0 z-30 bg-gray-900/90 backdrop-blur-md border-b border-gray-700 px-4 py-3 sm:hidden">
+                <div class="flex items-center justify-between">
+                    <button id="mobile-menu-btn" class="p-2 text-gray-400 hover:text-white">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <h1 class="text-xl font-bold text-white">Cài đặt</h1>
+                    <div class="w-10"></div>
+                </div>
+            </header>
+
+            <div class="max-w-7xl mx-auto py-8 px-4">
+                <h1 class="text-3xl font-bold text-white mb-8 hidden sm:block">Cài đặt</h1>
+                
+                <div class="flex flex-col md:flex-row gap-8">
+                    <!-- Settings Navigation -->
+                    <aside class="w-full md:w-1/4">
+                        <nav class="space-y-1 sticky top-8" id="settings-nav">
+                            <a href="#account" data-section="account" class="setting-nav-item flex items-center gap-3 px-4 py-2 text-slate-200 rounded-md setting-nav-active">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
+                                <span>Tài khoản của bạn</span>
+                            </a>
+                            <a href="#privacy" data-section="privacy" class="setting-nav-item flex items-center gap-3 px-4 py-2 text-slate-300 hover:bg-white/5 rounded-md">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                </svg>
+                                <span>Bảo mật & Quyền riêng tư</span>
+                            </a>
+                            <a href="#notifications" data-section="notifications" class="setting-nav-item flex items-center gap-3 px-4 py-2 text-slate-300 hover:bg-white/5 rounded-md">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                                </svg>
+                                <span>Thông báo</span>
+                            </a>
+                            <a href="#display" data-section="display" class="setting-nav-item flex items-center gap-3 px-4 py-2 text-slate-300 hover:bg-white/5 rounded-md">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                </svg>
+                                <span>Giao diện</span>
+                            </a>
+                            <a href="#advanced" data-section="advanced" class="setting-nav-item flex items-center gap-3 px-4 py-2 text-slate-300 hover:bg-white/5 rounded-md">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"></path>
+                                </svg>
+                                <span>Nâng cao</span>
+                            </a>
+                            <a href="#integrations" data-section="integrations" class="setting-nav-item flex items-center gap-3 px-4 py-2 text-slate-300 hover:bg-white/5 rounded-md">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                                </svg>
+                                <span>Tích hợp</span>
+                            </a>
+                            <a href="#developer" data-section="developer" class="setting-nav-item flex items-center gap-3 px-4 py-2 text-slate-300 hover:bg-white/5 rounded-md">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                                </svg>
+                                <span>Nhà phát triển</span>
+                            </a>
+                        </nav>
+                    </aside>
+                    
+                    <!-- Settings Content -->
+                    <div class="w-full md:w-3/4 space-y-8">
+                        <!-- Account Settings -->
+                        <div id="account" class="setting-content glass-card rounded-lg p-6">
+                            <h2 class="text-xl font-bold text-white mb-6">Tài khoản của bạn</h2>
+                            <form id="account-form" class="space-y-6">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                    <div>
+                                        <label for="last_name" class="block text-sm font-medium text-slate-300 mb-2">Họ và tên đệm</label>
+                                        <input type="text" id="last_name" name="last_name" value="Nguyễn Văn" class="w-full px-4 py-2 bg-slate-800/80 border border-slate-700 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400">
+                                    </div>
+                                    <div>
+                                        <label for="first_name" class="block text-sm font-medium text-slate-300 mb-2">Tên</label>
+                                        <input type="text" id="first_name" name="first_name" value="An" class="w-full px-4 py-2 bg-slate-800/80 border border-slate-700 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="username" class="block text-sm font-medium text-slate-300 mb-2">Tên người dùng (Username)</label>
+                                    <input type="text" id="username" name="username" value="username" class="w-full max-w-sm px-4 py-2 bg-slate-800/80 border border-slate-700 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400">
+                                </div>
+                                <div>
+                                    <label for="email" class="block text-sm font-medium text-slate-300 mb-2">Email</label>
+                                    <input type="email" id="email" name="email" value="user@example.com" class="w-full max-w-sm px-4 py-2 bg-slate-800/80 border border-slate-700 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400">
+                                </div>
+                                <div>
+                                    <label for="bio" class="block text-sm font-medium text-slate-300 mb-2">Tiểu sử</label>
+                                    <textarea id="bio" name="bio" class="w-full max-w-sm px-4 py-2 bg-slate-800/80 border border-slate-700 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400 no-resize overflow-hidden">Chào mừng đến với trang của tôi!</textarea>
+                                </div>
+                                <div class="flex justify-end">
+                                    <button type="submit" class="px-6 py-2 bg-yellow-500 text-black font-semibold rounded-lg hover:bg-yellow-400 transition-colors">
+                                        Lưu thay đổi
+                                    </button>
+                                </div>
+                                <div class="border-t border-slate-700 pt-6">
+                                    <h3 class="text-lg font-semibold text-white">Xóa tài khoản</h3>
+                                    <p class="text-sm text-slate-400 mt-1 mb-4">Hành động này không thể hoàn tác. Tất cả dữ liệu của bạn sẽ bị xóa vĩnh viễn.</p>
+                                    <button type="button" id="delete-account-btn" class="px-4 py-2 text-sm font-semibold bg-red-500 text-white hover:bg-red-600 focus:bg-red-600 active:bg-red-700 rounded-md transition-colors duration-200 border border-red-400">
+                                        Yêu cầu xóa tài khoản
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Privacy Settings -->
+                        <div id="privacy" class="setting-content glass-card rounded-lg p-6 hidden">
+                            <h2 class="text-xl font-bold text-white mb-6">Bảo mật & Quyền riêng tư</h2>
+                            <div class="space-y-6">
+                                <!-- Password Change -->
+                                <div>
+                                    <h3 class="text-lg font-semibold text-white mb-4">Đổi mật khẩu</h3>
+                                    <form id="password-form" class="space-y-4">
+                                        <div>
+                                            <label for="current_password" class="block text-sm font-medium text-slate-300 mb-2">Mật khẩu hiện tại</label>
+                                            <input type="password" id="current_password" name="current_password" class="w-full max-w-sm px-4 py-2 bg-slate-800/80 border border-slate-700 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400">
+                                        </div>
+                                        <div>
+                                            <label for="new_password" class="block text-sm font-medium text-slate-300 mb-2">Mật khẩu mới</label>
+                                            <input type="password" id="new_password" name="new_password" class="w-full max-w-sm px-4 py-2 bg-slate-800/80 border border-slate-700 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400">
+                                        </div>
+                                        <div>
+                                            <label for="confirm_password" class="block text-sm font-medium text-slate-300 mb-2">Xác nhận mật khẩu mới</label>
+                                            <input type="password" id="confirm_password" name="confirm_password" class="w-full max-w-sm px-4 py-2 bg-slate-800/80 border border-slate-700 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400">
+                                        </div>
+                                        <button type="submit" class="px-6 py-2 bg-yellow-500 text-black font-semibold rounded-lg hover:bg-yellow-400 transition-colors">
+                                            Đổi mật khẩu
+                                        </button>
+                                    </form>
+                                </div>
+
+                                <!-- Login Activity -->
+                                <div class="border-t border-slate-700 pt-6">
+                                    <h3 class="text-lg font-semibold text-white">Hoạt động đăng nhập</h3>
+                                    <p class="text-sm text-slate-400 mt-1 mb-4">Đây là danh sách các thiết bị đã đăng nhập vào tài khoản của bạn.</p>
+                                    <div id="login-sessions" class="space-y-3">
+                                        <!-- Sessions will be loaded here -->
+                                    </div>
+                                </div>
+
+                                <!-- Blocked Accounts -->
+                                <div class="border-t border-slate-700 pt-6">
+                                    <h3 class="text-lg font-semibold text-white">Tài khoản đã chặn</h3>
+                                    <p class="text-sm text-slate-400 mt-1 mb-4">Họ sẽ không thể xem trang cá nhân hoặc tương tác với bạn.</p>
+                                    <button id="manage-blocked-btn" class="px-4 py-2 text-sm font-semibold bg-slate-700 hover:bg-slate-600 rounded-md">
+                                        Quản lý
+                                    </button>
+                                </div>
+
+                                <!-- Data Download -->
+                                <div class="border-t border-slate-700 pt-6">
+                                    <h3 class="text-lg font-semibold text-white">Tải xuống dữ liệu của bạn</h3>
+                                    <p class="text-sm text-slate-400 mt-1 mb-4">Tạo một bản sao lưu dữ liệu của bạn trên Crown.</p>
+                                    <button id="download-data-btn" class="px-4 py-2 text-sm font-semibold bg-slate-700 hover:bg-slate-600 rounded-md">
+                                        Yêu cầu bản sao
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Notification Settings -->
+                        <div id="notifications" class="setting-content glass-card rounded-lg p-6 hidden">
+                            <h2 class="text-xl font-bold text-white mb-6">Thông báo</h2>
+                            <form id="notification-form" class="space-y-5">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="font-semibold text-white">Bình luận</h3>
+                                        <p class="text-sm text-slate-400">Khi có người bình luận về bài viết của bạn.</p>
+                                    </div>
+                                    <div class="relative inline-block w-10">
+                                        <input type="checkbox" id="comments" name="comments" checked class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
+                                        <label for="comments" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-600 cursor-pointer"></label>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="font-semibold text-white">Lượt thích</h3>
+                                        <p class="text-sm text-slate-400">Khi có người thích bài viết hoặc bình luận của bạn.</p>
+                                    </div>
+                                    <div class="relative inline-block w-10">
+                                        <input type="checkbox" id="likes" name="likes" checked class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
+                                        <label for="likes" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-600 cursor-pointer"></label>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="font-semibold text-white">Người theo dõi mới</h3>
+                                        <p class="text-sm text-slate-400">Khi có người mới bắt đầu theo dõi bạn.</p>
+                                    </div>
+                                    <div class="relative inline-block w-10">
+                                        <input type="checkbox" id="followers" name="followers" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
+                                        <label for="followers" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-600 cursor-pointer"></label>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="font-semibold text-white">Tin nhắn</h3>
+                                        <p class="text-sm text-slate-400">Khi có tin nhắn mới.</p>
+                                    </div>
+                                    <div class="relative inline-block w-10">
+                                        <input type="checkbox" id="messages" name="messages" checked class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
+                                        <label for="messages" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-600 cursor-pointer"></label>
+                                    </div>
+                                </div>
+                                <div class="border-t border-slate-700 pt-6">
+                                    <button type="submit" class="px-6 py-2 bg-yellow-500 text-black font-semibold rounded-lg hover:bg-yellow-400 transition-colors">
+                                        Lưu cài đặt
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Display Settings -->
+                        <div id="display" class="setting-content glass-card rounded-lg p-6 hidden">
+                            <h2 class="text-xl font-bold text-white mb-6">Giao diện</h2>
+                            <form id="display-form" class="space-y-6">
+                                <div>
+                                    <h3 class="font-semibold mb-2 settings-section-header">Chủ đề</h3>
+                                    <div class="flex space-x-4" id="theme-selector">
+                                        <button type="button" data-theme="light" class="theme-btn px-6 py-2 text-sm font-semibold rounded-md">Sáng</button>
+                                        <button type="button" data-theme="dark" class="theme-btn px-6 py-2 text-sm font-semibold rounded-md">Tối</button>
+                                        <button type="button" data-theme="system" class="theme-btn px-6 py-2 text-sm font-semibold rounded-md">Hệ thống</button>
+                                    </div>
+                                </div>
+                                <div class="border-t border-slate-700 pt-6">
+                                    <h3 class="font-semibold text-white mb-2">Cỡ chữ</h3>
+                                    <div class="flex items-center space-x-4">
+                                        <span class="text-sm">Nhỏ</span>
+                                        <input type="range" id="font-size" name="font-size" min="1" max="3" value="2" class="w-full max-w-xs h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer" title="Chọn cỡ chữ">
+                                        <span class="text-lg">Lớn</span>
+                                    </div>
+                                    <div class="mt-2 text-sm text-slate-400" id="font-size-preview">
+                                        Đây là cách văn bản sẽ hiển thị
+                                    </div>
+                                </div>
+                                <div class="border-t border-slate-700 pt-6">
+                                    <h3 class="font-semibold text-white mb-4">Màu sắc tùy chỉnh</h3>
+                                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                        <div class="text-center">
+                                            <div class="w-12 h-12 rounded-full bg-yellow-400 mx-auto mb-2 cursor-pointer hover:scale-110 transition-transform" data-color="#FBBF24"></div>
+                                            <span class="text-xs text-slate-400">Vàng (Mặc định)</span>
+                                        </div>
+                                        <div class="text-center">
+                                            <div class="w-12 h-12 rounded-full bg-blue-400 mx-auto mb-2 cursor-pointer hover:scale-110 transition-transform" data-color="#60A5FA"></div>
+                                            <span class="text-xs text-slate-400">Xanh dương</span>
+                                        </div>
+                                        <div class="text-center">
+                                            <div class="w-12 h-12 rounded-full bg-green-400 mx-auto mb-2 cursor-pointer hover:scale-110 transition-transform" data-color="#4ADE80"></div>
+                                            <span class="text-xs text-slate-400">Xanh lá</span>
+                                        </div>
+                                        <div class="text-center">
+                                            <div class="w-12 h-12 rounded-full bg-purple-400 mx-auto mb-2 cursor-pointer hover:scale-110 transition-transform" data-color="#A78BFA"></div>
+                                            <span class="text-xs text-slate-400">Tím</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="border-t border-slate-700 pt-6">
+                                    <button type="submit" class="px-6 py-2 bg-yellow-500 text-black font-semibold rounded-lg hover:bg-yellow-400 transition-colors">
+                                        Lưu cài đặt
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Advanced Settings -->
+                        <div id="advanced" class="setting-content glass-card rounded-lg p-6 hidden">
+                            <h2 class="text-xl font-bold text-white mb-6">Cài đặt nâng cao</h2>
+                            <form id="advanced-form" class="space-y-6">
+                                <!-- Performance Settings -->
+                                <div>
+                                    <h3 class="font-semibold text-white mb-4">Hiệu suất</h3>
+                                    <div class="space-y-4">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <h4 class="font-medium text-white">Tải trước nội dung</h4>
+                                                <p class="text-sm text-slate-400">Tải trước hình ảnh và video để trải nghiệm mượt mà hơn</p>
+                                            </div>
+                                            <div class="relative inline-block w-10">
+                                                <input type="checkbox" id="preload-content" name="preload-content" checked class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" title="Bật/tắt tải trước nội dung"/>
+                                                <label for="preload-content" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-600 cursor-pointer"></label>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <h4 class="font-medium text-white">Nén hình ảnh</h4>
+                                                <p class="text-sm text-slate-400">Tự động nén hình ảnh để tiết kiệm băng thông</p>
+                                            </div>
+                                            <div class="relative inline-block w-10">
+                                                <input type="checkbox" id="compress-images" name="compress-images" checked class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" title="Bật/tắt nén hình ảnh"/>
+                                                <label for="compress-images" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-600 cursor-pointer"></label>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <h4 class="font-medium text-white">Chế độ tiết kiệm dữ liệu</h4>
+                                                <p class="text-sm text-slate-400">Giảm chất lượng video và hình ảnh khi kết nối chậm</p>
+                                            </div>
+                                            <div class="relative inline-block w-10">
+                                                <input type="checkbox" id="data-saver" name="data-saver" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" title="Bật/tắt chế độ tiết kiệm dữ liệu"/>
+                                                <label for="data-saver" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-600 cursor-pointer"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Language Settings -->
+                                <div class="border-t border-slate-700 pt-6">
+                                    <h3 class="font-semibold text-white mb-4">Ngôn ngữ và khu vực</h3>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label for="language" class="block text-sm font-medium text-slate-300 mb-2">Ngôn ngữ giao diện</label>
+                                            <select id="language" name="language" class="w-full px-4 py-2 bg-slate-800/80 border border-slate-700 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400">
+                                                <option value="vi" selected>Tiếng Việt</option>
+                                                <option value="en">English</option>
+                                                <option value="zh">中文</option>
+                                                <option value="ja">日本語</option>
+                                                <option value="ko">한국어</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label for="timezone" class="block text-sm font-medium text-slate-300 mb-2">Múi giờ</label>
+                                            <select id="timezone" name="timezone" class="w-full px-4 py-2 bg-slate-800/80 border border-slate-700 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400">
+                                                <option value="Asia/Ho_Chi_Minh" selected>GMT+7 (Việt Nam)</option>
+                                                <option value="Asia/Tokyo">GMT+9 (Tokyo)</option>
+                                                <option value="Asia/Shanghai">GMT+8 (Bắc Kinh)</option>
+                                                <option value="America/New_York">GMT-5 (New York)</option>
+                                                <option value="Europe/London">GMT+0 (London)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Content Settings -->
+                                <div class="border-t border-slate-700 pt-6">
+                                    <h3 class="font-semibold text-white mb-4">Nội dung</h3>
+                                    <div class="space-y-4">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <h4 class="font-medium text-white">Hiển thị nội dung nhạy cảm</h4>
+                                                <p class="text-sm text-slate-400">Cho phép xem nội dung có thể nhạy cảm</p>
+                                            </div>
+                                            <div class="relative inline-block w-10">
+                                                <input type="checkbox" id="sensitive-content" name="sensitive-content" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" title="Bật/tắt nội dung nhạy cảm"/>
+                                                <label for="sensitive-content" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-600 cursor-pointer"></label>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <h4 class="font-medium text-white">Tự động phát video</h4>
+                                                <p class="text-sm text-slate-400">Video sẽ tự động phát khi cuộn đến</p>
+                                            </div>
+                                            <div class="relative inline-block w-10">
+                                                <input type="checkbox" id="autoplay-video" name="autoplay-video" checked class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" title="Bật/tắt tự động phát video"/>
+                                                <label for="autoplay-video" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-600 cursor-pointer"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="border-t border-slate-700 pt-6">
+                                    <button type="submit" class="px-6 py-2 bg-yellow-500 text-black font-semibold rounded-lg hover:bg-yellow-400 transition-colors">
+                                        Lưu cài đặt nâng cao
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Integrations Settings -->
+                        <div id="integrations" class="setting-content glass-card rounded-lg p-6 hidden">
+                            <h2 class="text-xl font-bold text-white mb-6">Tích hợp</h2>
+                            <div class="space-y-6">
+                                <!-- Social Media Connections -->
+                                <div>
+                                    <h3 class="font-semibold text-white mb-4">Kết nối mạng xã hội</h3>
+                                    <div class="space-y-3">
+                                        <div class="flex items-center justify-between p-4 bg-slate-800/50 rounded-lg">
+                                            <div class="flex items-center space-x-3">
+                                                <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                                        <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+                                                    </svg>
+                                                </div>
+                                                <div>
+                                                    <h4 class="font-medium text-white">Twitter/X</h4>
+                                                    <p class="text-sm text-slate-400">Chia sẻ bài viết lên Twitter</p>
+                                                </div>
+                                            </div>
+                                            <button class="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                                                Kết nối
+                                            </button>
+                                        </div>
+                                        <div class="flex items-center justify-between p-4 bg-slate-800/50 rounded-lg">
+                                            <div class="flex items-center space-x-3">
+                                                <div class="w-10 h-10 bg-blue-700 rounded-lg flex items-center justify-center">
+                                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                                                    </svg>
+                                                </div>
+                                                <div>
+                                                    <h4 class="font-medium text-white">Facebook</h4>
+                                                    <p class="text-sm text-slate-400">Chia sẻ bài viết lên Facebook</p>
+                                                </div>
+                                            </div>
+                                            <button class="px-4 py-2 text-sm bg-blue-700 text-white rounded-md hover:bg-blue-800">
+                                                Kết nối
+                                            </button>
+                                        </div>
+                                        <div class="flex items-center justify-between p-4 bg-slate-800/50 rounded-lg">
+                                            <div class="flex items-center space-x-3">
+                                                <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+                                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                                                    </svg>
+                                                </div>
+                                                <div>
+                                                    <h4 class="font-medium text-white">LinkedIn</h4>
+                                                    <p class="text-sm text-slate-400">Chia sẻ bài viết chuyên nghiệp</p>
+                                                </div>
+                                            </div>
+                                            <button class="px-4 py-2 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                                                Kết nối
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Cloud Storage -->
+                                <div class="border-t border-slate-700 pt-6">
+                                    <h3 class="font-semibold text-white mb-4">Lưu trữ đám mây</h3>
+                                    <div class="space-y-3">
+                                        <div class="flex items-center justify-between p-4 bg-slate-800/50 rounded-lg">
+                                            <div class="flex items-center space-x-3">
+                                                <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+                                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                                        <path d="M18.944 11.112C18.507 7.67 15.56 5 12 5 9.244 5 6.85 6.611 5.757 9.15 3.609 9.792 2 11.82 2 14c0 2.757 2.243 5 5 5h11c2.206 0 4-1.794 4-4 0-1.932-1.37-3.545-3.056-3.888z"/>
+                                                    </svg>
+                                                </div>
+                                                <div>
+                                                    <h4 class="font-medium text-white">Google Drive</h4>
+                                                    <p class="text-sm text-slate-400">Sao lưu ảnh và video tự động</p>
+                                                </div>
+                                            </div>
+                                            <button class="px-4 py-2 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                                                Kết nối
+                                            </button>
+                                        </div>
+                                        <div class="flex items-center justify-between p-4 bg-slate-800/50 rounded-lg">
+                                            <div class="flex items-center space-x-3">
+                                                <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                                        <path d="M16.002 18.999h-8.001c-2.755 0-4.001-2.246-4.001-5.001v-4c0-2.755 1.246-5 4.001-5h8.001c2.755 0 4.999 2.245 4.999 5v4c0 2.755-2.244 5.001-4.999 5.001z"/>
+                                                    </svg>
+                                                </div>
+                                                <div>
+                                                    <h4 class="font-medium text-white">OneDrive</h4>
+                                                    <p class="text-sm text-slate-400">Đồng bộ với Microsoft OneDrive</p>
+                                                </div>
+                                            </div>
+                                            <button class="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                                                Kết nối
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Developer Settings -->
+                        <div id="developer" class="setting-content glass-card rounded-lg p-6 hidden">
+                            <h2 class="text-xl font-bold text-white mb-6">Cài đặt nhà phát triển</h2>
+                            <div class="space-y-6">
+                                <!-- API Keys -->
+                                <div>
+                                    <h3 class="font-semibold text-white mb-4">API Keys</h3>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label for="api-key" class="block text-sm font-medium text-slate-300 mb-2">API Key hiện tại</label>
+                                            <div class="flex space-x-2">
+                                                <input type="text" id="api-key" value="cr_1234567890abcdef" readonly class="flex-1 px-4 py-2 bg-slate-800/80 border border-slate-700 rounded-md focus:outline-none">
+                                                <button type="button" id="copy-api-key" class="px-4 py-2 bg-slate-700 text-white rounded-md hover:bg-slate-600">
+                                                    Sao chép
+                                                </button>
+                                                <button type="button" id="regenerate-api-key" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
+                                                    Tạo mới
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Webhooks -->
+                                <div class="border-t border-slate-700 pt-6">
+                                    <h3 class="font-semibold text-white mb-4">Webhooks</h3>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label for="webhook-url" class="block text-sm font-medium text-slate-300 mb-2">URL Webhook</label>
+                                            <input type="url" id="webhook-url" placeholder="https://yourapp.com/webhook" class="w-full px-4 py-2 bg-slate-800/80 border border-slate-700 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400">
+                                        </div>
+                                        <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                            <label class="flex items-center space-x-2 text-sm">
+                                                <input type="checkbox" class="form-checkbox h-4 w-4 text-yellow-400">
+                                                <span>Bài viết mới</span>
+                                            </label>
+                                            <label class="flex items-center space-x-2 text-sm">
+                                                <input type="checkbox" class="form-checkbox h-4 w-4 text-yellow-400">
+                                                <span>Lượt thích</span>
+                                            </label>
+                                            <label class="flex items-center space-x-2 text-sm">
+                                                <input type="checkbox" class="form-checkbox h-4 w-4 text-yellow-400">
+                                                <span>Bình luận</span>
+                                            </label>
+                                            <label class="flex items-center space-x-2 text-sm">
+                                                <input type="checkbox" class="form-checkbox h-4 w-4 text-yellow-400">
+                                                <span>Theo dõi</span>
+                                            </label>
+                                            <label class="flex items-center space-x-2 text-sm">
+                                                <input type="checkbox" class="form-checkbox h-4 w-4 text-yellow-400">
+                                                <span>Tin nhắn</span>
+                                            </label>
+                                        </div>
+                                        <button type="button" id="test-webhook" class="px-4 py-2 bg-yellow-500 text-black rounded-md hover:bg-yellow-400">
+                                            Test Webhook
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Rate Limiting -->
+                                <div class="border-t border-slate-700 pt-6">
+                                    <h3 class="font-semibold text-white mb-4">Giới hạn tần suất</h3>
+                                    <div class="bg-slate-800/50 rounded-lg p-4">
+                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                                            <div>
+                                                <div class="text-2xl font-bold text-yellow-400">1,000</div>
+                                                <div class="text-sm text-slate-400">Requests/giờ</div>
+                                            </div>
+                                            <div>
+                                                <div class="text-2xl font-bold text-green-400">750</div>
+                                                <div class="text-sm text-slate-400">Đã sử dụng</div>
+                                            </div>
+                                            <div>
+                                                <div class="text-2xl font-bold text-blue-400">250</div>
+                                                <div class="text-sm text-slate-400">Còn lại</div>
+                                            </div>
+                                        </div>
+                                        <div class="mt-4 w-full bg-slate-700 rounded-full h-2">
+                                            <div class="bg-yellow-400 h-2 rounded-full" style="width: 75%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Debug Mode -->
+                                <div class="border-t border-slate-700 pt-6">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h3 class="font-semibold text-white">Chế độ Debug</h3>
+                                            <p class="text-sm text-slate-400">Hiển thị thông tin debug chi tiết</p>
+                                        </div>
+                                        <div class="relative inline-block w-10">
+                                            <input type="checkbox" id="debug-mode" name="debug-mode" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" title="Bật/tắt chế độ debug"/>
+                                            <label for="debug-mode" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-600 cursor-pointer"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Mobile Navigation Placeholder -->
+    <div id="mobile-navigation-placeholder"></div>
+
+    <script src="/public/js/avatar-utils.js"></script>
+    <script src="/public/js/navigation.js"></script>
+    <script src="/public/js/settings.js"></script>
+</body>
+</html>

@@ -1,0 +1,486 @@
+/**
+ * Navigation Manager - Quản lý thanh navigation và active states
+ */
+class NavigationManager {
+    constructor() {
+        this.currentPage = this.getCurrentPage();
+        this.currentTheme = this.getStoredTheme() || this.getSystemTheme();
+        this.init();
+    }
+
+    /**
+     * Khởi tạo navigation
+     */
+    async init() {
+        // Initialize theme first
+        this.initTheme();
+        
+        // Sử dụng fallback navigation trực tiếp thay vì fetch
+        this.createFallbackNavigation();
+        this.setActiveNavigation();
+        this.setupNavigationEvents();
+        
+        // Wait a bit for DOM to settle, then load user information
+        setTimeout(async () => {
+            await this.loadUserInfo();
+        }, 50); // Giảm từ 100ms xuống 50ms để load nhanh hơn
+    }
+
+    /**
+     * Load navigation components từ HTML files
+     */
+    async loadNavigationComponents() {
+        try {
+            // Load main navigation
+            const mainNavResponse = await fetch('/views/includes/main-navigation.html');
+            if (mainNavResponse.ok) {
+                const mainNavHTML = await mainNavResponse.text();
+                const mainNavPlaceholder = document.getElementById('main-navigation-placeholder');
+                if (mainNavPlaceholder) {
+                    mainNavPlaceholder.innerHTML = mainNavHTML;
+                }
+            }
+
+            // Load mobile navigation
+            const mobileNavResponse = await fetch('/views/includes/mobile-navigation.html');
+            if (mobileNavResponse.ok) {
+                const mobileNavHTML = await mobileNavResponse.text();
+                const mobileNavPlaceholder = document.getElementById('mobile-navigation-placeholder');
+                if (mobileNavPlaceholder) {
+                    mobileNavPlaceholder.innerHTML = mobileNavHTML;
+                }
+            }
+        } catch (error) {
+            console.error('Error loading navigation components:', error);
+            // Fallback: sử dụng navigation inline nếu không load được
+            this.createFallbackNavigation();
+        }
+    }
+
+    /**
+     * Tạo navigation fallback nếu không load được file
+     */
+    createFallbackNavigation() {
+        console.log('📊 Tạo navigation fallback...');
+        
+        const mainNavHTML = `
+            <aside class="w-20 lg:w-64 fixed h-full flex flex-col justify-between hidden sm:flex glass-card ml-2 my-2 rounded-2xl">
+                <div>
+                    <div class="p-4 lg:p-6 flex items-center justify-center lg:justify-start border-b border-white/10 h-20">
+                        <svg class="w-10 h-10 text-yellow-400 logo-crown" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2L8.25 8.5L2 9.25L7 14L5.5 20.5L12 17L18.5 20.5L17 14L22 9.25L15.75 8.5L12 2Z"></path>
+                            <path d="M12 5.5L13.85 9.55L18.25 10.1L15.25 13.2L16.15 17.55L12 15.3L7.85 17.55L8.75 13.2L5.75 10.1L10.15 9.55L12 5.5Z"></path>
+                        </svg>
+                        <span class="text-2xl lg:text-3xl font-bold text-white tracking-wider ml-3 hidden lg:block logo-text">Crown</span>
+                    </div>
+                    <nav class="flex-grow p-2 lg:p-4">
+                        <a href="/home" class="nav-item flex items-center p-3 my-1 text-slate-300 hover:bg-white/5 rounded-lg transition-colors duration-200" data-page="home">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                            </svg>
+                            <span class="nav-text ml-4 hidden lg:block">Trang chủ</span>
+                        </a>
+                        <a href="/explore" class="nav-item flex items-center p-3 my-1 text-slate-300 hover:bg-white/5 rounded-lg transition-colors duration-200" data-page="explore">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"></path>
+                            </svg>
+                            <span class="nav-text ml-4 hidden lg:block">Khám phá</span>
+                        </a>
+                        <a href="/notifications" class="nav-item flex items-center p-3 my-1 text-slate-300 hover:bg-white/5 rounded-lg transition-colors duration-200" data-page="notifications">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                            </svg>
+                            <span class="nav-text ml-4 hidden lg:block">Thông báo</span>
+                        </a>
+                        <a href="/messages" class="nav-item flex items-center p-3 my-1 text-slate-300 hover:bg-white/5 rounded-lg transition-colors duration-200" data-page="messages">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                            </svg>
+                            <span class="nav-text ml-4 hidden lg:block">Tin nhắn</span>
+                        </a>
+                        <a href="/maps" class="nav-item flex items-center p-3 my-1 text-slate-300 hover:bg-white/5 rounded-lg transition-colors duration-200" data-page="maps">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l6-3V5.618a1 1 0 00-1.447-.894L15 7m-6 13v-3m6 3v-3m0 0l-6-3m6 3L9 7"></path>
+                            </svg>
+                            <span class="nav-text ml-4 hidden lg:block">Bản đồ</span>
+                        </a>
+                        <a href="/news" class="nav-item flex items-center p-3 my-1 text-slate-300 hover:bg-white/5 rounded-lg transition-colors duration-200" data-page="news">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4 12H9m-4 0H5"></path>
+                            </svg>
+                            <span class="nav-text ml-4 hidden lg:block">Báo</span>
+                        </a>
+                        <a href="/settings" class="nav-item flex items-center p-3 my-1 text-slate-300 hover:bg-white/5 rounded-lg transition-colors duration-200" data-page="settings">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                            <span class="nav-text ml-4 hidden lg:block">Cài đặt</span>
+                        </a>
+                    </nav>
+                </div>
+                <div class="p-4 lg:p-6 border-t border-white/10">
+                    <!-- Theme Toggle Button -->
+                    <button id="theme-toggle" class="w-full flex items-center justify-center p-2 mb-3 text-slate-400 hover:text-yellow-400 hover:bg-white/10 rounded-lg transition-colors" title="Chuyển đổi chế độ sáng/tối">
+                        <svg id="theme-icon-dark" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                        </svg>
+                        <svg id="theme-icon-light" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                        <span class="nav-text ml-2 hidden lg:block">Chế độ</span>
+                    </button>
+                    
+                    <a href="#" class="flex items-center group user-profile">
+                        <div class="relative">
+                            <img src="https://placehold.co/48x48/FBBF24/0C101D?text=U" alt="User Avatar" class="w-12 h-12 rounded-full transition-transform duration-300 user-avatar">
+                            <div class="absolute -bottom-1 -right-1 bg-yellow-400 rounded-full w-5 h-5 flex items-center justify-center border-2 border-slate-800">
+                                <svg class="w-3 h-3 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="nav-text ml-4 hidden lg:block">
+                            <p class="font-bold text-white">Tên Người Dùng</p>
+                            <p class="text-sm text-slate-400">@username</p>
+                        </div>
+                    </a>
+                </div>
+            </aside>
+        `;
+
+        const mobileNavHTML = `
+            <nav class="sm:hidden fixed bottom-0 left-0 right-0 glass-card p-2 flex justify-around">
+                <a href="/home" class="mobile-nav-item flex flex-col items-center p-2 text-slate-400 hover:text-yellow-400 transition-colors duration-200" data-page="home">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                    <span class="text-xs mt-1">Trang chủ</span>
+                </a>
+                <a href="/explore" class="mobile-nav-item flex flex-col items-center p-2 text-slate-400 hover:text-yellow-400 transition-colors duration-200" data-page="explore">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"></path>
+                    </svg>
+                    <span class="text-xs mt-1">Khám phá</span>
+                </a>
+                <a href="/notifications" class="mobile-nav-item flex flex-col items-center p-2 text-slate-400 hover:text-yellow-400 transition-colors duration-200" data-page="notifications">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                    </svg>
+                    <span class="text-xs mt-1">Thông báo</span>
+                </a>
+                <a href="/messages" class="mobile-nav-item flex flex-col items-center p-2 text-slate-400 hover:text-yellow-400 transition-colors duration-200" data-page="messages">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                    </svg>
+                    <span class="text-xs mt-1">Tin nhắn</span>
+                </a>
+                <a href="/settings" class="mobile-nav-item flex flex-col items-center p-2 text-slate-400 hover:text-yellow-400 transition-colors duration-200" data-page="settings">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <span class="text-xs mt-1">Cài đặt</span>
+                </a>
+            </nav>
+        `;
+
+        const mainNavPlaceholder = document.getElementById('main-navigation-placeholder');
+        if (mainNavPlaceholder) {
+            mainNavPlaceholder.innerHTML = mainNavHTML;
+            console.log('✅ Main navigation đã được tạo');
+        } else {
+            console.error('❌ Không tìm thấy main-navigation-placeholder');
+        }
+
+        const mobileNavPlaceholder = document.getElementById('mobile-navigation-placeholder');
+        if (mobileNavPlaceholder) {
+            mobileNavPlaceholder.innerHTML = mobileNavHTML;
+            console.log('✅ Mobile navigation đã được tạo');
+        } else {
+            console.error('❌ Không tìm thấy mobile-navigation-placeholder');
+        }
+    }
+
+    /**
+     * Lấy trang hiện tại từ URL
+     */
+    getCurrentPage() {
+        const path = window.location.pathname;
+        if (path === '/' || path === '/home') return 'home';
+        if (path.startsWith('/explore')) return 'explore';
+        if (path.startsWith('/notifications')) return 'notifications';
+        if (path.startsWith('/messages')) return 'messages';
+        if (path.startsWith('/maps')) return 'maps';
+        if (path.startsWith('/news')) return 'news';
+        if (path.startsWith('/settings')) return 'settings';
+        return 'home'; // default
+    }
+
+    /**
+     * Set active state cho navigation item hiện tại
+     */
+    setActiveNavigation() {
+        // Desktop navigation
+        const desktopNavItems = document.querySelectorAll('.nav-item');
+        desktopNavItems.forEach(item => {
+            const page = item.getAttribute('data-page');
+            if (page === this.currentPage) {
+                item.classList.remove('text-slate-300', 'hover:bg-white/5');
+                item.classList.add('text-yellow-400', 'font-semibold', 'bg-white/10', 'active');
+            } else {
+                item.classList.remove('text-yellow-400', 'font-semibold', 'bg-white/10', 'active');
+                item.classList.add('text-slate-300', 'hover:bg-white/5');
+            }
+        });
+
+        // Mobile navigation
+        const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
+        mobileNavItems.forEach(item => {
+            const page = item.getAttribute('data-page');
+            if (page === this.currentPage) {
+                item.classList.remove('text-slate-400');
+                item.classList.add('text-yellow-400', 'active');
+            } else {
+                item.classList.remove('text-yellow-400', 'active');
+                item.classList.add('text-slate-400');
+            }
+        });
+    }
+
+    /**
+     * Setup navigation click events
+     */
+    setupNavigationEvents() {
+        // Desktop navigation events
+        const navItems = document.querySelectorAll('.nav-item, .mobile-nav-item');
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                const href = item.getAttribute('href');
+                if (href && href !== '#') {
+                    // Smooth transition effect
+                    item.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        item.style.transform = 'scale(1)';
+                    }, 150);
+                }
+            });
+        });
+
+        // Hover effects cho desktop
+        const desktopNavItems = document.querySelectorAll('.nav-item');
+        desktopNavItems.forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                if (!item.classList.contains('text-yellow-400')) {
+                    item.style.transform = 'translateX(4px)';
+                }
+            });
+
+            item.addEventListener('mouseleave', () => {
+                item.style.transform = 'translateX(0)';
+            });
+        });
+
+        // Theme toggle event
+        const themeToggle = document.getElementById('theme-toggle');
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                this.toggleTheme();
+                this.updateThemeIcon();
+            });
+        }
+    }
+
+    /**
+     * Update theme icon based on current theme
+     */
+    updateThemeIcon() {
+        const darkIcon = document.getElementById('theme-icon-dark');
+        const lightIcon = document.getElementById('theme-icon-light');
+        
+        if (darkIcon && lightIcon) {
+            if (this.currentTheme === 'light') {
+                darkIcon.classList.add('hidden');
+                lightIcon.classList.remove('hidden');
+            } else {
+                darkIcon.classList.remove('hidden');
+                lightIcon.classList.add('hidden');
+            }
+        }
+    }
+
+    /**
+     * Load user information from API
+     */
+    async loadUserInfo() {
+        try {
+            const response = await fetch('/api/user', {
+                method: 'GET',
+                credentials: 'include'
+            });
+            
+            if (response.ok) {
+                const result = await response.json();
+                if (result.success && result.data) {
+                    this.updateUserDisplay(result.data);
+                    console.log('✅ User info loaded:', result.data);
+                } else {
+                    console.log('ℹ️ User not authenticated:', result.message);
+                }
+            } else {
+                console.log('ℹ️ User not authenticated, status:', response.status);
+            }
+        } catch (error) {
+            console.error('❌ Error loading user info:', error);
+            console.log('ℹ️ Using default user display');
+        }
+    }
+
+    /**
+     * Update user display with real user data
+     */
+    updateUserDisplay(userData) {
+        console.log('🔄 Starting updateUserDisplay with userData:', userData);
+        
+        // Update display name - tìm tất cả elements có text "Tên Người Dùng"
+        const usernameElements = document.querySelectorAll('.font-bold.text-white');
+        console.log('📋 Found username elements:', usernameElements.length);
+        
+        usernameElements.forEach(element => {
+            console.log('🔍 Checking element text:', element.textContent.trim());
+            if (element.textContent.trim() === 'Tên Người Dùng') {
+                console.log('✅ Updating username element');
+                element.textContent = `${userData.firstName} ${userData.lastName}`;
+            }
+        });
+        
+        // Update @username - tìm tất cả elements có text "@username"
+        const handleElements = document.querySelectorAll('.text-sm.text-slate-400');
+        console.log('📋 Found handle elements:', handleElements.length);
+        
+        handleElements.forEach(element => {
+            console.log('🔍 Checking handle text:', element.textContent.trim());
+            if (element.textContent.trim() === '@username') {
+                console.log('✅ Updating handle element');
+                element.textContent = `@${userData.username}`;
+            }
+        });
+        
+        // Update avatar người dùng trong header
+        const avatarElements = document.querySelectorAll('img[alt="User Avatar"]');
+        console.log('📋 Found avatar elements:', avatarElements.length);
+        
+        avatarElements.forEach(avatar => {
+            if (typeof ClientAvatarUtils !== 'undefined') {
+                console.log('✅ Updating avatar');
+                avatar.src = ClientAvatarUtils.getAvatarUrl(userData, 48);
+            } else {
+                console.log('⚠️ ClientAvatarUtils not available');
+            }
+        });
+
+        console.log('✅ Navigation user info updated:', userData);
+    }
+
+    /**
+     * Update navigation khi chuyển trang (cho SPA)
+     */
+    updateNavigation(newPage) {
+        this.currentPage = newPage;
+        this.setActiveNavigation();
+    }
+
+    /**
+     * Toggle collapsed state cho navigation
+     */
+    toggleCollapsed() {
+        const sidebar = document.querySelector('aside');
+        const navTexts = document.querySelectorAll('.nav-text');
+        
+        if (sidebar && sidebar.classList.contains('lg:w-64')) {
+            // Collapse
+            sidebar.classList.remove('lg:w-64');
+            sidebar.classList.add('lg:w-20', 'sidebar-collapsed');
+            navTexts.forEach(text => text.classList.add('lg:hidden'));
+        } else if (sidebar) {
+            // Expand
+            sidebar.classList.remove('lg:w-20', 'sidebar-collapsed');
+            sidebar.classList.add('lg:w-64');
+            navTexts.forEach(text => text.classList.remove('lg:hidden'));
+        }
+    }
+
+    /**
+     * Get system theme preference
+     */
+    getSystemTheme() {
+        return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    }
+
+    /**
+     * Get stored theme from localStorage
+     */
+    getStoredTheme() {
+        return localStorage.getItem('crown-theme');
+    }
+
+    /**
+     * Set and store theme
+     */
+    setTheme(theme) {
+        this.currentTheme = theme;
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('crown-theme', theme);
+        
+        // Update body classes for better theming
+        document.body.classList.remove('theme-dark', 'theme-light');
+        document.body.classList.add(`theme-${theme}`);
+        
+        // Dispatch theme change event
+        document.dispatchEvent(new CustomEvent('themeChanged', {
+            detail: { theme: theme }
+        }));
+        
+        console.log(`🎨 Theme changed to: ${theme}`);
+    }
+
+    /**
+     * Toggle between light and dark theme
+     */
+    toggleTheme() {
+        const newTheme = this.currentTheme === 'light' ? 'dark' : 'light';
+        this.setTheme(newTheme);
+    }
+
+    /**
+     * Initialize theme
+     */
+    initTheme() {
+        this.setTheme(this.currentTheme);
+        
+        // Update theme icon after a brief delay to ensure DOM is ready
+        setTimeout(() => {
+            this.updateThemeIcon();
+        }, 100);
+        
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', (e) => {
+            if (!this.getStoredTheme()) {
+                this.setTheme(e.matches ? 'light' : 'dark');
+                this.updateThemeIcon();
+            }
+        });
+    }
+}
+
+// Khởi tạo Navigation Manager khi DOM loaded
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('🔧 Khởi tạo Navigation Manager...');
+    window.navigationManager = new NavigationManager();
+    console.log('✅ Navigation Manager đã được khởi tạo');
+});
+
+// Export cho module systems
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = NavigationManager;
+}

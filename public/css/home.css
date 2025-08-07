@@ -1,0 +1,221 @@
+/* CSS Variables for Light/Dark Theme */
+:root {
+    --home-bg-color: #f8fafc;
+    --home-text-color: #1e293b;
+    --home-text-secondary: #64748b;
+    --home-text-muted: #94a3b8;
+    --home-glass-bg: rgba(255, 255, 255, 0.8);
+    --home-glass-border: rgba(0, 0, 0, 0.1);
+    --home-scrollbar-track: rgba(0, 0, 0, 0.1);
+    --home-scrollbar-thumb: #cbd5e1;
+    --home-scrollbar-thumb-hover: #94a3b8;
+    --home-card-bg: rgba(255, 255, 255, 0.9);
+    --home-shadow: rgba(0, 0, 0, 0.1);
+    --home-border: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"],
+:root:not([data-theme]) {
+    --home-bg-color: #0c101d;
+    --home-text-color: #e2e8f0;
+    --home-text-secondary: #cbd5e1;
+    --home-text-muted: #94a3b8;
+    --home-glass-bg: rgba(23, 25, 35, 0.3);
+    --home-glass-border: rgba(255, 255, 255, 0.1);
+    --home-scrollbar-track: rgba(45, 55, 72, 0.5);
+    --home-scrollbar-thumb: #4a5568;
+    --home-scrollbar-thumb-hover: #718096;
+    --home-card-bg: rgba(23, 25, 35, 0.4);
+    --home-shadow: rgba(0, 0, 0, 0.3);
+    --home-border: rgba(255, 255, 255, 0.1);
+}
+
+/* Auto detect system theme */
+@media (prefers-color-scheme: light) {
+    :root:not([data-theme]) {
+        --home-bg-color: #f8fafc;
+        --home-text-color: #1e293b;
+        --home-text-secondary: #64748b;
+        --home-text-muted: #94a3b8;
+        --home-glass-bg: rgba(255, 255, 255, 0.8);
+        --home-glass-border: rgba(0, 0, 0, 0.1);
+        --home-scrollbar-track: rgba(0, 0, 0, 0.1);
+        --home-scrollbar-thumb: #cbd5e1;
+        --home-scrollbar-thumb-hover: #94a3b8;
+        --home-card-bg: rgba(255, 255, 255, 0.9);
+        --home-shadow: rgba(0, 0, 0, 0.1);
+        --home-border: rgba(0, 0, 0, 0.1);
+    }
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--home-bg-color);
+    color: var(--home-text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Custom scrollbar for a modern look */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: var(--home-scrollbar-track);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--home-scrollbar-thumb);
+    border-radius: 4px;
+    transition: background 0.3s ease;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--home-scrollbar-thumb-hover);
+}
+
+.glass-card {
+    background: var(--home-glass-bg);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--home-glass-border);
+    box-shadow: 0 8px 32px var(--home-shadow);
+    transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px var(--home-shadow);
+}
+
+/* Enhanced card styling for both themes */
+.post-card,
+.story-card,
+.suggestion-card {
+    background: var(--home-card-bg);
+    border: 1px solid var(--home-glass-border);
+    box-shadow: 0 4px 16px var(--home-shadow);
+    transition: all 0.3s ease;
+}
+
+.post-card:hover,
+.story-card:hover,
+.suggestion-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px var(--home-shadow);
+}
+
+/* Input and form styling */
+input[type="text"],
+textarea {
+    background: var(--home-card-bg) !important;
+    color: var(--home-text-color) !important;
+    border-color: var(--home-glass-border) !important;
+}
+
+input[type="text"]:focus,
+textarea:focus {
+    border-color: #fbbf24 !important;
+    outline: none !important;
+    box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.2) !important;
+}
+
+/* Button styling */
+.btn-primary {
+    background-color: #fbbf24;
+    color: #1f2937;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #f59e0b;
+    transform: translateY(-1px);
+}
+
+/* Light mode specific improvements */
+[data-theme="light"] .glass-card,
+:root:not([data-theme]) .glass-card {
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+}
+
+@media (prefers-color-scheme: light) {
+    :root:not([data-theme]) .glass-card {
+        -webkit-backdrop-filter: blur(20px);
+        backdrop-filter: blur(20px);
+    }
+}
+
+/* Search input specific styling */
+.search-input {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    color: #1e293b !important;
+}
+
+[data-theme="dark"] .search-input {
+    background: rgba(30, 41, 59, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #e2e8f0 !important;
+}
+
+/* Dropdown menu styling */
+.dropdown-menu {
+    background: var(--home-card-bg);
+    border: 1px solid var(--home-glass-border);
+    box-shadow: 0 10px 40px var(--home-shadow);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+}
+
+/* Sidebar specific styling to override any conflicting styles */
+aside .glass-card h3 {
+    color: var(--home-text-color) !important;
+}
+
+aside .glass-card p,
+aside .glass-card span {
+    color: var(--home-text-secondary) !important;
+}
+
+aside .glass-card a {
+    color: var(--home-text-color) !important;
+}
+
+/* Force sidebar text colors in light mode */
+[data-theme="light"] aside .glass-card h3,
+:root:not([data-theme]) aside .glass-card h3 {
+    color: #1e293b !important;
+}
+
+[data-theme="light"] aside .glass-card p,
+[data-theme="light"] aside .glass-card span,
+:root:not([data-theme]) aside .glass-card p,
+:root:not([data-theme]) aside .glass-card span {
+    color: #64748b !important;
+}
+
+[data-theme="light"] aside .glass-card a,
+:root:not([data-theme]) aside .glass-card a {
+    color: #1e293b !important;
+}
+
+@media (prefers-color-scheme: light) {
+    :root:not([data-theme]) aside .glass-card h3 {
+        color: #1e293b !important;
+    }
+    
+    :root:not([data-theme]) aside .glass-card p,
+    :root:not([data-theme]) aside .glass-card span {
+        color: #64748b !important;
+    }
+    
+    :root:not([data-theme]) aside .glass-card a {
+        color: #1e293b !important;
+    }
+}
+.no-resize {
+    resize: none;
+}
+.dropdown-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem; /* 12px */
+}

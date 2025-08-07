@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  # Development application service
+  crown-app-dev:
+    build:
+      context: .
+      target: development
+      dockerfile: Dockerfile
+    container_name: crown-app-dev
+    ports:
+      - "3000:3000"
+      - "9229:9229" # Debug port
+    environment:
+      - NODE_ENV=development
+      - MONGODB_URI=mongodb://crown-db-dev:27017/crown_dev
+      - REDIS_URL=redis://crown-redis-dev:6379
+      - DEBUG=crown:*
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      - crown-db-dev
+      - crown-redis-dev
+    networks:
+      - crown-dev-network
+    command: ["dumb-init", "npm", "run", "dev"]
+
+  # Development MongoDB
+  crown-db-dev:
+    image: mongo:7.0
+    container_name: crown-db-dev
+    ports:
+      - "27017:27017"
+    volumes:
+      - crown-db-dev-data:/data/db
+      - ./docker/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - crown-dev-network
+    environment:
+      - MONGO_INITDB_DATABASE=crown_dev
+
+  # Development Redis
+  crown-redis-dev:
+    image: redis:7.2-alpine
+    container_name: crown-redis-dev
+    ports:
+      - "6379:6379"
+    volumes:
+      - crown-redis-dev-data:/data
+    networks:
+      - crown-dev-network
+    command: redis-server --appendonly yes
+
+networks:
+  crown-dev-network:
+    driver: bridge
+
+volumes:
+  crown-db-dev-data:
+  crown-redis-dev-data:
