@@ -532,7 +532,8 @@ class EnhancedSecurityService {
     }
 
     async analyzeSecurityEvents() {
-        const recentEvents = this.securityEvents.filter(
+        const allEvents = Array.from(this.securityEvents.values());
+        const recentEvents = allEvents.filter(
             event => Date.now() - event.timestamp.getTime() < 5 * 60 * 1000
         );
 
